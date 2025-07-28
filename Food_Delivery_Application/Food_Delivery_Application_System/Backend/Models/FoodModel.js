@@ -7,7 +7,7 @@ const foodItemSchema = new mongoose.Schema({
     description: { type: String, trim: true, required: true },
     isAvailable: { type: Boolean, default: true },
     category: { type: String, trim: true },
-    restaurantId: { type: mongoose.Schema.ObjectId, ref: "Restaurant", required: true }
+    restaurantId: { type: mongoose.Schema.ObjectId, ref: "Restaurant", }
 });
 
 module.exports = mongoose.model("food-items", foodItemSchema);

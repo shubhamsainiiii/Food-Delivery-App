@@ -12,6 +12,7 @@ const restaurantOwnerModel = new mongoose.Schema({
         state: { type: String, trim: true },
         zip: { type: String, trim: true }
     },
+    gstnumber: { type: String },
     cuisineType: { type: String, trim: true },
     openingHours: {
         open: { type: String },
@@ -22,6 +23,9 @@ const restaurantOwnerModel = new mongoose.Schema({
         type: String,
         enum: ['pending', 'approved', 'rejected'],
         default: 'pending'
+    },
+    image: {
+        type: [String]
     }
 })
 module.exports = mongoose.model('Restaurant', restaurantOwnerModel);

@@ -3,10 +3,13 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const cors = require('cors')
 const app = express();
+const fileupload = require("express-fileupload");
 
 const port = process.env.PORT || 9999;
 const mongoURL = process.env.MongoUrl;
-app.use(express.json());
+app.use(express.json())
+app.use(fileupload())
+app.use(express.urlencoded())
 app.use(cors());
 
 
@@ -23,6 +26,7 @@ const deliveryBoyRouter = require('./Routes/deliveryBoyRoute');
 app.use('/Delivery-Boy', deliveryBoyRouter)
 
 const addfooditem = require('./Routes/FoodRoute');
+const fileUpload = require('express-fileupload');
 app.use('/food-items', addfooditem);
 
 mongoose.connect(mongoURL)

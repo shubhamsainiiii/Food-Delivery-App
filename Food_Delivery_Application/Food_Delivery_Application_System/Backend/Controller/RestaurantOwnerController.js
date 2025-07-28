@@ -2,11 +2,22 @@ const Restaurant = require('../Models/RestaurantOwnerModel');
 const user = require('../Models/UserModel')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { uploadImage } = require('../Helper/Helper');
 const secretkey = process.env.SECRETKEY;
+
 
 exports.signupRestaurant = async (req, res) => {
     try {
-        const { restaurantName, name, email, phone, password } = req.body;
+        const { restaurantName, name, email, phone, password, address, gstnumber, cuisineType, openingHours } = req.body;
+
+        let parsedAddress = address;
+        if (typeof address === 'string') {
+            try {
+                parsedAddress = JSON.parse(address);
+            } catch (err) {
+                return res.status(400).json({ message: 'Invalid address format' });
+            }
+        }
         if (!(restaurantName && name && email && phone && password)) {
             return res.status(404).send({ message: "all input required" });
         }
@@ -16,19 +27,29 @@ exports.signupRestaurant = async (req, res) => {
         const salt = bcrypt.genSaltSync(12);
         const hashpass = bcrypt.hashSync(password, salt);
 
-        const data = { restaurantName, name, email, phone, password: hashpass, status: 'pending' };
+        if (!req.files || !req.files.images) {
+            return res.status(400).json({ message: "No images uploaded" });
+        }
+        const image = await uploadImage(req.files);
+        console.log("image======", image)
+        const imageurl = image.map(img => img.secure_url);
+        console.log("imageurl=====", imageurl)
+
+        const data = { restaurantName, name, email, phone, password: hashpass, address: parsedAddress, gstnumber, cuisineType, openingHours, status: 'pending', image: imageurl };
+
         const newRestaurant = new Restaurant(data);
         await newRestaurant.save();
+        console.log("newRestaurant=====", newRestaurant)
+
         const newuser = { ...data, role: 'restaurant', restaurantId: newRestaurant._id };
         const userData = new user(newuser);
-        await userData.save()
-        console.log('restaurant data in user table : ', userData)
-        res.status(202).json({ message: 'Signup successful', data: newRestaurant });
-
+        await userData.save();
+        res.status(201).json({ message: 'Signup successful', data: newRestaurant });
     } catch (error) {
         res.status(500).json({ message: 'Signup failed', error: error.message });
     }
 };
+
 
 exports.updateRestaurant = async (req, res) => {
     try {
@@ -81,5 +102,26 @@ exports.getRestaurantDetails = async (req, res) => {
         res.status(202).send({ name: restaurant.name, restaurantName: restaurant.restaurantName });
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch restaurant details', error: error.message });
+    }
+};
+
+
+exports.getallrestaurant = async (req, res) => {
+    try {
+        const restaurants = await Restaurant.find();
+
+        if (!restaurants || restaurants.length === 0) {
+            return res.status(404).json({ message: 'No restaurants found' });
+        }
+
+        res.status(200).json({
+            message: 'All restaurants fetched successfully',
+            data: restaurants
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to fetch restaurants',
+            error: error.message
+        });
     }
 };

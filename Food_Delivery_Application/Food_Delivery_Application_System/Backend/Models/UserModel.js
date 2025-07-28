@@ -10,6 +10,11 @@ const userModel = new mongoose.Schema({
         enum: ['admin', 'user', 'restaurant', 'delivery-boy'],
         default: 'user'
     },
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'approved'
+    },
     adminId: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
     restaurantId: { type: mongoose.Schema.ObjectId, ref: 'Restaurant' },
     deliveryBoyId: { type: mongoose.Schema.ObjectId, ref: 'Delivery-Boy' }

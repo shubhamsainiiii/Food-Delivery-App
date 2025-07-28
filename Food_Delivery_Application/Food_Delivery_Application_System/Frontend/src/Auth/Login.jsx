@@ -5,16 +5,13 @@ import { FaUserCircle, FaEnvelope, FaLock } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-    const [form, setForm] = useState({ email: '', password: '', role: '' });
+    const [form, setForm] = useState({ email: '', password: '' });
+    const [st, setSt] = useState("")
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const handleRoleChange = (e) => {
-        setForm({ ...form, role: e.target.value });
     };
 
     const handleSubmit = async (e) => {
@@ -23,38 +20,64 @@ const Login = () => {
             toast.error('Please fill in both fields.');
             return;
         }
+
         setLoading(true);
         try {
-            let endpoint = "";
-            if (form.role === "user") endpoint = "http://localhost:8080/User/userlogin";
-            else if (form.role === "restaurant") endpoint = "http://localhost:8080/Restaurant/restaurantlogin";
-            else if (form.role === "admin") endpoint = "http://localhost:8080/Admin/adminlogin";
-            else if (form.role === "delivery-boy") endpoint = "http://localhost:8080/DeliveryBoy/deliveryboylogin";
-            else endpoint = "http://localhost:8080/User/userlogin";
+            const res = await axios.post('http://localhost:8080/User/userlogin', {
+                email: form.email,
+                password: form.password
+            });
+            const { user } = res.data
+            setSt(user.status)
+            console.log(user, ",,..")
+            console.log(user.status, "shsh")
+            console.log(st, "ksskd")
 
-            const res = await axios.post(endpoint, { email: form.email, password: form.password });
 
+            console.log(res.data, "dhsh")
             if (res.status === 200 || res.status === 202) {
-                toast.success('Login successful!');
-                localStorage.setItem('userToken', res.data.token || '');
-                localStorage.setItem('userRole', form.role);
+                if (res.data.role === "admin" || res.data.role === "user") {
+                    toast.success('Login successful!');
+                }
+                if (res.data.role === "restaurant" || res.data.role === "delivery-boy") {
+                    if (user.status === "pending") {
+                        toast.error('Your request is in pending state');
+                    }
+                    else if (user.status === "rejected") {
+                        toast.error('You request is rejected');
+                    }
+                    else {
+                        toast.success('Login successful!');
+                    }
+                }
 
-                if (form.role === "admin") setTimeout(() => navigate('/admin-dashboard'), 1000);
-                else if (form.role === "restaurant") setTimeout(() => navigate('/rd'), 1000);
-                else if (form.role === "delivery-boy") setTimeout(() => navigate('/delivery-dashboard'), 1000);
-                else if (form.role === "user") setTimeout(() => navigate('/user-dashboard'), 1000);
+                localStorage.setItem('userToken', res.data.token || '');
+                localStorage.setItem('userRole', res.data.role || '');
+                localStorage.setItem("user", JSON.stringify(res.data.user))
+                if (res.data.role === "user") {
+                    navigate("/user-dashboard")
+                }
+                else if (res.data.role === "admin") {
+                    navigate("/admin-dashboard")
+                }
+                else if (res.data.role === "restaurant") {
+                    if (user.status === "pending" || user.status === "rejected") {
+                        navigate("/login")
+                    }
+                    else {
+                        navigate("/rd")
+                    }
+
+                }
+                else if (res.data.role === "delivery-boy") {
+                    navigate("/delivery-dashboard")
+                }
             }
         } catch (error) {
-            if (error.response && error.response.status === 404) {
-                const msg = (error.response.data?.message || "").toLowerCase();
-                if (msg.includes('not yet approved')) toast.info('You are not approved yet!');
-                else if (msg.includes('rejected')) toast.error('You are rejected.');
-                else if (msg.includes('invalid email') || msg.includes('no account')) toast.error('Invalid email or password.');
-                else toast.error(error.response.data.message || 'Login failed!');
-            } else if (error.response && error.response.data && error.response.data.message) {
+            if (error.response && error.response.data && error.response.data.message) {
                 toast.error(error.response.data.message);
             } else {
-                toast.error('Network error!');
+                toast.error('Login failed or network error!');
             }
         } finally {
             setLoading(false);
@@ -68,18 +91,6 @@ const Login = () => {
                     <FaUserCircle size={100} className="text-white/30 bg-white/0 rounded-full" />
                 </div>
                 <form className="space-y-2" onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <select
-                            name="role"
-                            value={form.role}
-                            onChange={handleRoleChange}
-                            className="w-full py-2 px-4 rounded bg-white/20 text-black outline-none mb-2">
-                            <option value="user">Normal User</option>
-                            <option value="restaurant">Restaurant Owner</option>
-                            <option value="admin">Admin</option>
-                            <option value="delivery-boy">Delivery Boy</option>
-                        </select>
-                    </div>
                     <div className="relative mb-4">
                         <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
                         <input

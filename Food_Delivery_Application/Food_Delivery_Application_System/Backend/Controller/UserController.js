@@ -29,6 +29,7 @@ exports.usersignup = async (req, res) => {
 exports.loginuser = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log(req.body)
         const existingMail = await user.findOne({ email });
         if (!existingMail) {
             return res.status(404).send({ message: "user Not Exist" });
@@ -40,7 +41,7 @@ exports.loginuser = async (req, res) => {
         }
         const token = jwt.sign({ email: existingMail.email }, secretkey, { expiresIn: '24h' })
         return res.status(202).send({
-            message: "user Logged in Successfully", role: existingMail.role, token
+            message: "user Logged in Successfully", role: existingMail.role, token, user: existingMail
         });
     }
     catch (error) {

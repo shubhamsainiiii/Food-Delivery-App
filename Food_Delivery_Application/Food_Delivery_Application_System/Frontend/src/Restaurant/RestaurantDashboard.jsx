@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import getRestaurantIdFromToken from "../Utils/getRestaurantIdFromToken";
 import { FaStore, FaClipboardList, FaDollarSign, FaUtensils, FaChartLine, FaRegBell } from "react-icons/fa";
 
 const DashboardCard = ({ icon: Icon, label, value, bgClasses }) => (
@@ -21,13 +20,14 @@ const RestaurantDashboard = () => {
     const [ownerName, setOwnerName] = useState('');
     const [restaurantName, setRestaurantName] = useState('');
     const [loading, setLoading] = useState(true);
+    const user = JSON.parse(localStorage.getItem("user"))
 
     useEffect(() => {
         const fetchRestaurantData = async () => {
             const token = localStorage.getItem('userToken');
             if (!token) return navigate('/login');
-            const restaurantId = getRestaurantIdFromToken(token);
-            if (!restaurantId) return navigate('/login');
+            const restaurantId = user.restaurantId;
+
             try {
                 const res = await axios.get(`http://localhost:8080/Restaurant/${restaurantId}`);
                 setOwnerName(res.data.name);
@@ -120,8 +120,14 @@ const RestaurantDashboard = () => {
                     <button className="py-2 mb-2 rounded-lg bg-gradient-to-r from-[#8b5cf6] to-[#6366f1] text-white font-bold shadow hover:opacity-90 transition">
                         View Menu
                     </button>
-                    <button className="py-2 rounded-lg bg-gradient-to-r from-[#a366d9] to-[#f9a8d4] text-white font-bold shadow hover:opacity-90 transition">
+                    <button className="py-2 mb-2 rounded-lg bg-gradient-to-r from-[#a366d9] to-[#f9a8d4] text-white font-bold shadow hover:opacity-90 transition">
                         Order Reports
+                    </button>
+                    <button
+                        className="py-2 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-300 text-white font-bold shadow hover:opacity-90 transition"
+                        onClick={() => navigate('/rdup')}
+                    >
+                        Update Restaurant
                     </button>
                 </div>
             </div>
