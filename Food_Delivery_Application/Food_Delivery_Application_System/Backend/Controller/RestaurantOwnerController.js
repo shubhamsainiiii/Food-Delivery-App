@@ -55,7 +55,9 @@ exports.updateRestaurant = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
-        const updated = await Restaurant.findByIdAndUpdate(id, updates, { new: true });
+        console.log("updates....", updates)
+        const updated = await Restaurant.findByIdAndUpdate(id, { $set: updates }, { new: true });
+        console.log("updated....", updated)
         if (!updated) return res.status(404).json({ message: 'Restaurant not found' });
         res.status(200).json({ message: 'Profile updated successfully', data: updated });
     } catch (error) {
@@ -125,3 +127,8 @@ exports.getallrestaurant = async (req, res) => {
         });
     }
 };
+
+
+exports.getresaturant = async (req, res) => {
+    // const
+}

@@ -7,4 +7,6 @@ router.post('/adminlogin', adminController.adminLogin);
 router.patch('/restaurantrequest/:id/:action', adminController.handleRestaurantApproval);
 router.get('/getallrestaurant', adminController.getallrestaurant);
 
+
+
 module.exports = router;

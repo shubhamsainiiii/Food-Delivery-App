@@ -17,7 +17,9 @@ const userModel = new mongoose.Schema({
     },
     adminId: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
     restaurantId: { type: mongoose.Schema.ObjectId, ref: 'Restaurant' },
-    deliveryBoyId: { type: mongoose.Schema.ObjectId, ref: 'Delivery-Boy' }
-})
+    deliveryBoyId: { type: mongoose.Schema.ObjectId, ref: 'Delivery-Boy' },
+    otp: { type: String },
+    otpexpire: { type: Date }
+}, { timestamps: true, versionKey: false })
 
 module.exports = mongoose.model('User', userModel);

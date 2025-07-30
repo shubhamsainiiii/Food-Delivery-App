@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { FaUser, FaEnvelope, FaPhone, FaLock, FaBuilding, FaUtensils, FaAddressBook, FaMapMarkerAlt, FaCity, FaMapPin, FaHourglassHalf, FaRegClock, FaImage } from 'react-icons/fa';
 
 const SignupRestaurantOwner = () => {
     const navigate = useNavigate();
@@ -93,53 +94,139 @@ const SignupRestaurantOwner = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-            <form onSubmit={handleSubmit} className="w-full max-w-xl bg-gray-800 p-6 rounded-lg shadow-md space-y-4">
-                <h2 className="text-2xl font-bold text-center">Restaurant Signup</h2>
-
-                <input className="input" type="text" name="restaurantName" placeholder="Restaurant Name" value={form.restaurantName} onChange={handleChange} required />
-                <input className="input" type="text" name="name" placeholder="Owner Name" value={form.name} onChange={handleChange} required />
-                <input className="input" type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} required />
-                <input className="input" type="tel" name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} required />
-                <input className="input" type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} required />
-                <input className="input" type="text" name="gstnumber" placeholder="GST Number" value={form.gstnumber} onChange={handleChange} />
-                <input className="input" type="text" name="cuisineType" placeholder="Cuisine Type" value={form.cuisineType} onChange={handleChange} />
-
-                {/* Address */}
-                <div className="grid grid-cols-2 gap-2">
-                    <input className="input" type="text" name="address.street" placeholder="Street" value={form.address.street} onChange={handleChange} />
-                    <input className="input" type="text" name="address.city" placeholder="City" value={form.address.city} onChange={handleChange} />
-                    <input className="input" type="text" name="address.state" placeholder="State" value={form.address.state} onChange={handleChange} />
-                    <input className="input" type="text" name="address.zip" placeholder="ZIP Code" value={form.address.zip} onChange={handleChange} />
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#39244a] via-[#522b53] to-[#5a6a91] px-3 py-12">
+            <div className="w-full max-w-lg mx-auto rounded-[2.5rem] p-8 bg-white/10 shadow-2xl backdrop-blur-2xl border border-white/30 relative" style={{ boxShadow: '0 8px 60px 8px rgba(60,24,110,0.4)' }}>
+                <div className="flex justify-center mb-6">
+                    {/* <FaBuilding size={1} className="text-white/30 bg-white/0 rounded-full" /> */}
                 </div>
+                <h2 className="text-3xl font-extrabold text-center text-white mb-6" style={{ letterSpacing: "1px" }}>Restaurant Signup</h2>
 
-                {/* Opening Hours */}
-                <div className="grid grid-cols-2 gap-2">
-                    <input className="input" type="text" name="openingHours.open" placeholder="Opening Time (e.g. 9:00 AM)" value={form.openingHours.open} onChange={handleChange} />
-                    <input className="input" type="text" name="openingHours.close" placeholder="Closing Time (e.g. 10:00 PM)" value={form.openingHours.close} onChange={handleChange} />
+                <form className="space-y-2" onSubmit={handleSubmit}>
+
+                    {/* Restaurant Name */}
+                    <div className="relative mb-4">
+                        <FaBuilding className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                        <input type="text" name="restaurantName" placeholder="Restaurant Name" value={form.restaurantName} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" required style={{ background: 'transparent' }} />
+                        <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                    </div>
+
+                    {/* Owner Name */}
+                    <div className="relative mb-4">
+                        <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                        <input type="text" name="name" placeholder="Owner Name" value={form.name} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" required style={{ background: 'transparent' }} />
+                        <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                    </div>
+
+                    {/* Email */}
+                    <div className="relative mb-4">
+                        <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                        <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" required style={{ background: 'transparent' }} />
+                        <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                    </div>
+
+                    {/* Phone Number */}
+                    <div className="relative mb-4">
+                        <FaPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                        <input type="tel" name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" required style={{ background: 'transparent' }} />
+                        <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                    </div>
+
+                    {/* Password */}
+                    <div className="relative mb-4">
+                        <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                        <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" required style={{ background: 'transparent' }} />
+                        <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                    </div>
+
+                    {/* Cuisine Type */}
+                    <div className="relative mb-4">
+                        <FaUtensils className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                        <input type="text" name="cuisineType" placeholder="Cuisine Type" value={form.cuisineType} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" style={{ background: 'transparent' }} />
+                        <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                    </div>
+
+                    {/* GST Number */}
+                    <div className="relative mb-4">
+                        <FaAddressBook className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                        <input type="text" name="gstnumber" placeholder="GST Number" value={form.gstnumber} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" style={{ background: 'transparent' }} />
+                        <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                    </div>
+
+
+                    {/* Address Fields */}
+                    <h3 className="text-lg font-semibold text-white/80 mt-6 mb-2">Address</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                        <div className="relative mb-4">
+                            <FaMapMarkerAlt className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                            <input type="text" name="address.street" placeholder="Street" value={form.address.street} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" style={{ background: 'transparent' }} />
+                            <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                        </div>
+                        <div className="relative mb-4">
+                            <FaCity className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                            <input type="text" name="address.city" placeholder="City" value={form.address.city} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" style={{ background: 'transparent' }} />
+                            <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                        </div>
+                        <div className="relative mb-4">
+                            <FaMapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                            <input type="text" name="address.state" placeholder="State" value={form.address.state} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" style={{ background: 'transparent' }} />
+                            <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                        </div>
+                        <div className="relative mb-4">
+                            <FaMapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                            <input type="text" name="address.zip" placeholder="ZIP Code" value={form.address.zip} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" style={{ background: 'transparent' }} />
+                            <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                        </div>
+                    </div>
+
+                    {/* Opening Hours */}
+                    <h3 className="text-lg font-semibold text-white/80 mt-6 mb-2">Opening Hours</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                        <div className="relative mb-4">
+                            <FaRegClock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                            <input type="text" name="openingHours.open" placeholder="Opening Time (e.g. 9:00 AM)" value={form.openingHours.open} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" style={{ background: 'transparent' }} />
+                            <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                        </div>
+                        <div className="relative mb-4">
+                            <FaHourglassHalf className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
+                            <input type="text" name="openingHours.close" placeholder="Closing Time (e.g. 10:00 PM)" value={form.openingHours.close} onChange={handleChange} className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base" style={{ background: 'transparent' }} />
+                            <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
+                        </div>
+                    </div>
+
+                    {/* Image Upload */}
+                    <div className="pt-4 pb-2">
+                        <label className="text-sm font-medium text-white/80 mb-2 flex items-center">
+                            <FaImage className="mr-2" size={18} /> Upload 3 Restaurant Images
+                        </label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => setImages([...e.target.files])}
+                            className="w-full p-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-[#6055dd] file:via-[#a366d9] file:to-[#9f3e71] file:text-white file:hover:opacity-85 file:transition-all file:duration-300 cursor-pointer"
+                            required
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-2 !mt-6 rounded-xl bg-gradient-to-r from-[#6055dd] via-[#a366d9] to-[#9f3e71] text-white font-semibold tracking-widest text-lg shadow-md hover:opacity-85 transition-all duration-300 cursor-pointer"
+                        style={{ letterSpacing: "1px" }}
+                    >
+                        {loading ? "Signing up..." : "SIGN UP"}
+                    </button>
+                </form>
+                <div className="mt-8">
+                    <a
+                        href="/login"
+                        className="block w-full py-2.5 text-center rounded-lg text-white/75 font-semibold tracking-wider bg-white/10 hover:bg-white/20 transition-all duration-300"
+                        style={{ letterSpacing: ".7px" }}
+                    >
+                        Already have an account? Login
+                    </a>
                 </div>
-
-                {/* Image Upload */}
-                <div>
-                    <label className="block text-sm mb-1">Upload 3 Restaurant Images</label>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={(e) => setImages([...e.target.files])}
-                        className="input bg-white/10 text-white"
-                        required
-                    />
-                </div>
-
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition"
-                >
-                    {loading ? "Signing up..." : "Sign Up"}
-                </button>
-            </form>
+            </div>
         </div>
     );
 };
