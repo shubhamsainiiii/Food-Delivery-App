@@ -29,6 +29,9 @@ const addfooditem = require('./Routes/FoodRoute');
 const fileUpload = require('express-fileupload');
 app.use('/food-items', addfooditem);
 
+const addtoCart = require('./Routes/CartRoute');
+app.use('/Cart', addtoCart);
+
 mongoose.connect(mongoURL)
     .then(() => {
         console.log("Database Connected Successfully", mongoURL)

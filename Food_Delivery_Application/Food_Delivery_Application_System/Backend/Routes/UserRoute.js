@@ -14,4 +14,5 @@ router.get('/alladdress', auth, addressController.allAddress);
 router.get('/addressbyid', auth, addressController.addressById);
 router.put('/update', auth, userController.updateProfile);
 router.get('/getuser', auth, userController.getuser);
+router.delete('/deleteaddress/:id', auth, addressController.deleteaddress)
 module.exports = router;

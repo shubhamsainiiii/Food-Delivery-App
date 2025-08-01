@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const secretkey = process.env.SECRETKEY;
 const nodemailer = require('nodemailer');
 const moment = require('moment');
+const { uploadImage } = require('../Helper/Helper')
 
 exports.usersignup = async (req, res) => {
     try {
@@ -140,42 +141,87 @@ exports.sendotp = async (req, res) => {
     }
 }
 
+// exports.updateProfile = async (req, res) => {
+//     try {
+//         // const { name, phone } = req.body;
+//         const { name, phone } = req.body;
+//         const curuser = req.user;
+
+//         // ✅ Use User model to find by email
+//         const existingUser = await user.findOne({ email: curuser.email });
+//         if (!existingUser) {
+//             return res.status(400).send("User not found");
+//         }
+//         console.log('existinguser', existingUser)
+//         let image;
+
+//         // ✅ Upload image if exists
+//         if (req.files && Object.keys(req.files).length > 0) {
+//             const imageUpload = await uploadImage(req.files);
+//             image = imageUpload[0]?.secure_url || imageUpload[0]?.url; // Ensure compatibility
+//         }
+
+//         const updateData = { name, phone };
+//         if (image) {
+//             updateData.image = image;
+//         }
+
+//         // ✅ Use User model to update
+//         const updatedProfile = await user.findByIdAndUpdate(
+//             existingUser._id,
+//             updateData,
+//             { new: true }
+//         );
+//         console.log("updatedProfile", updatedProfile)
+//         return res.status(200).send(updatedProfile);
+//     } catch (error) {
+//         console.error("Profile update error:", error);
+//         return res.status(500).json({ error: error.message });
+//     }
+// };
+
 
 exports.updateProfile = async (req, res) => {
     try {
-        const { name, phone } = req.body;
-        const user = req.user;
+        const body = req.body || {};
+        const curuser = req.user;
 
-        // Find user
-        const alreadyEmail = await User.findOne({ email: user.email });
-        if (!alreadyEmail) {
-            return res.status(400).send("Email not found");
+        const existingUser = await user.findOne({ email: curuser.email });
+        if (!existingUser) {
+            return res.status(400).send("User not found");
         }
 
         let image;
-
-        // Check if an image was uploaded
         if (req.files && Object.keys(req.files).length > 0) {
             const imageUpload = await uploadImage(req.files);
-            image = imageUpload[0].url;
+            image = imageUpload[0]?.secure_url || imageUpload[0]?.url;
         }
 
-        // Prepare update data
-        const data = { name, phone };
+        // Only include field if it exists AND is not empty string or null
+        let updateData = {};
+        if (body.name !== undefined && body.name !== null && body.name.trim() !== '') {
+            updateData.name = body.name;
+        }
+        if (body.phone !== undefined && body.phone !== null && body.phone.trim() !== '') {
+            updateData.phone = body.phone;
+        }
         if (image) {
-            data.image = image; // Only update image if new one uploaded
+            updateData.image = image;
         }
 
-        const id = user._id;
+        if (Object.keys(updateData).length === 0) {
+            return res.status(400).send("No valid fields to update");
+        }
 
-        const profileUpdate = await user.findByIdAndUpdate({ _id: id }, data, {
-            new: true,
-        });
+        const updatedProfile = await user.findByIdAndUpdate(
+            existingUser._id,
+            updateData,
+            { new: true }
+        );
 
-        return res.status(200).send(profileUpdate);
+        return res.status(200).send(updatedProfile);
     } catch (error) {
+        console.error("Profile update error:", error);
         return res.status(500).json({ error: error.message });
     }
 };
-
-

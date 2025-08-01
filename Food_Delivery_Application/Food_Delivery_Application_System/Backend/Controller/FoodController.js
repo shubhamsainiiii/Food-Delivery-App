@@ -2,6 +2,7 @@ const foodItem = require('../Models/FoodModel');
 const foodImage = require('../Models/FoodImageModel');
 const { uploadImage } = require('../Helper/Helper');
 
+
 exports.addfood = async (req, res) => {
     try {
         const { foodName, type, price, description, isAvailable, category } = req.body;
@@ -34,7 +35,6 @@ exports.addfood = async (req, res) => {
         return res.status(500).send({ message: "error", error: error.message })
     }
 }
-
 
 exports.getallfood = async (req, res) => {
     try {

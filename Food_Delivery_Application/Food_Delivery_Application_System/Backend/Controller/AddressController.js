@@ -49,8 +49,8 @@ exports.updateAddress = async (req, res) => {
 }
 
 exports.allAddress = async (req, res) => {
-    const result = await UserAddress.find()
-    return res.status(200).send(result)
+    const result = await UserAddress.find({ userId: req.user._id })
+    return res.status(200).send({ address: result })
 }
 
 exports.addressById = async (req, res) => {
@@ -59,3 +59,22 @@ exports.addressById = async (req, res) => {
     const result = await UserAddress.findById({ _id: id })
     return res.status(200).send(result)
 }
+exports.deleteaddress = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user._id;
+
+        // Find and delete only if the address belongs to the user
+        const deletedAddress = await UserAddress.findOneAndDelete({ _id: id, userId: userId });
+        console.log("delete", deletedAddress)
+
+        if (!deletedAddress) {
+            return res.status(404).json({ msg: "Address not found or you're not authorized to delete it." });
+        }
+
+        return res.status(200).json({ msg: "Address deleted successfully." });
+    } catch (error) {
+        console.error("Error deleting address:", error);
+        return res.status(500).json({ msg: "Server error" });
+    }
+};

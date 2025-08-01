@@ -41,9 +41,10 @@ exports.signupRestaurant = async (req, res) => {
         await newRestaurant.save();
         console.log("newRestaurant=====", newRestaurant)
 
-        const newuser = { ...data, role: 'restaurant', restaurantId: newRestaurant._id };
+        const newuser = { name, email, phone, password: hashpass, image: imageurl[0], role: 'restaurant', restaurantId: newRestaurant._id, status: 'pending' };
         const userData = new user(newuser);
         await userData.save();
+        console.log("restaurant data in user table : ", userData);
         res.status(201).json({ message: 'Signup successful', data: newRestaurant });
     } catch (error) {
         res.status(500).json({ message: 'Signup failed', error: error.message });
@@ -129,6 +130,29 @@ exports.getallrestaurant = async (req, res) => {
 };
 
 
-exports.getresaturant = async (req, res) => {
-    // const
-}
+// exports.searchRestaurants = async (req, res) => {
+//     try {
+//         const { query } = req.query;
+//         if (!query) {
+//             return res.status(400).json({ message: 'Query parameter is required' });
+//         }
+
+//         // Case-insensitive regex search on restaurantName and cuisineType (optional)
+//         const restaurants = await Restaurant.find({
+//             status: 'approved', // Optional: only approved restaurants
+//             $or: [
+//                 { restaurantName: { $regex: query, $options: 'i' } },
+//                 { cuisineType: { $regex: query, $options: 'i' } }
+//             ]
+//         });
+
+//         return res.json(restaurants);
+//     } catch (error) {
+//         console.error('Error searching restaurants:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// };
+
+// exports.getresaturant = async (req, res) => {
+//     // const
+// }

@@ -35,7 +35,7 @@ const Home = () => {
 
     return (
         <div>
-            <Navbar />
+            {/* <Navbar /> */}
             <Hero />
             <Discover restaurants={restaurants} />
             <Stats />

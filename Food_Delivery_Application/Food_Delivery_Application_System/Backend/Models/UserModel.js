@@ -15,6 +15,7 @@ const userModel = new mongoose.Schema({
         enum: ['pending', 'approved', 'rejected'],
         default: 'approved'
     },
+    image: { type: String },
     adminId: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
     restaurantId: { type: mongoose.Schema.ObjectId, ref: 'Restaurant' },
     deliveryBoyId: { type: mongoose.Schema.ObjectId, ref: 'Delivery-Boy' },
