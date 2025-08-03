@@ -1,283 +1,5 @@
-// import React, { useState } from 'react';
-
-// const CartItem = ({ item, onUpdate, onRemove }) => {
-//     const [quantity, setQuantity] = useState(item.quantity);
-
-//     const handleQuantityChange = (e) => {
-//         const val = Math.max(1, Number(e.target.value));
-//         setQuantity(val);
-//     };
-
-//     return (
-//         <div className="flex flex-col sm:flex-row items-center gap-4 p-4 border-b bg-white shadow-sm rounded-lg hover:shadow-lg transition mb-3">
-//             {/* Food Image */}
-//             <img
-//                 src={item.foodItemId?.images?.[0]?.imageUrl || 'https://via.placeholder.com/80'}
-//                 alt={item.foodItemId?.name}
-//                 className="w-20 h-20 rounded object-cover border"
-//             />
-
-//             {/* Info */}
-//             <div className="flex-1 text-left">
-//                 <p className="font-bold text-lg text-gray-900">{item.foodItemId?.name}</p>
-//                 <p className="text-gray-600 text-sm mt-1">Price: <span className="text-orange-600 font-semibold">₹{item.foodItemId?.price}</span></p>
-//                 <p className="text-xs text-gray-500 mt-2">Total: <span className="text-orange-700 font-semibold">₹{(item.foodItemId?.price * quantity)}</span></p>
-//             </div>
-
-//             {/* Actions */}
-//             <div className="flex flex-col sm:flex-row items-center gap-2">
-//                 {/* Quantity Selector */}
-//                 <input
-//                     type="number"
-//                     min="1"
-//                     value={quantity}
-//                     onChange={handleQuantityChange}
-//                     className="w-16 border rounded px-2 py-1 text-center focus:outline-none focus:border-orange-500 bg-gray-50"
-//                 />
-
-//                 {/* Update Button */}
-//                 <button
-//                     onClick={() => onUpdate(item.foodItemId._id, quantity)}
-//                     className="bg-orange-500 hover:bg-orange-600 text-white text-sm px-3 py-1 rounded transition font-medium shadow"
-//                 >
-//                     Update
-//                 </button>
-
-//                 {/* Remove Button */}
-//                 <button
-//                     onClick={() => onRemove(item._id)}
-//                     className="bg-red-100 hover:bg-red-200 text-red-600 text-sm px-3 py-1 rounded transition font-medium shadow"
-//                 >
-//                     Remove
-//                 </button>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default CartItem;
-
-
-
-// import React, { useState, useEffect } from 'react';
-
-// const CartItem = ({ item, onUpdate, onRemove }) => {
-//     const [quantity, setQuantity] = useState(item.quantity);
-
-//     // Keep quantity state synced if item.quantity changes externally
-//     useEffect(() => {
-//         setQuantity(item.quantity);
-//     }, [item.quantity]);
-
-//     const handleQuantityChange = (e) => {
-//         const val = Math.max(1, Number(e.target.value));
-//         setQuantity(val);
-//     };
-
-//     // Determine the image URL safely from various possible structures
-//     const imageUrl =
-//         (item.foodItemId?.images && item.foodItemId.images.length > 0 && (
-//             typeof item.foodItemId.images[0] === 'string'
-//                 ? item.foodItemId.images[0]
-//                 : item.foodItemId.images[0]?.imageUrl
-//         )) ||
-//         item.foodItemId?.image?.[0] ||
-//         item.foodItemId?.image ||
-//         'https://via.placeholder.com/80';
-
-//     console.log('cart item ', item)
-//     console.log('food item ', item.foodItemId)
-
-//     return (
-//         <div className="flex flex-col sm:flex-row items-center gap-4 p-4 border-b bg-white shadow-sm rounded-lg hover:shadow-lg transition mb-3">
-//             {/* Food Image */}
-//             <img
-//                 src={imageUrl}
-//                 alt={item.foodItemId?.name || 'Food Image'}
-//                 className="w-20 h-20 rounded object-cover border"
-//             />
-
-//             {/* Info */}
-//             <div className="flex-1 text-left">
-//                 <p className="font-bold text-lg text-gray-900">{item.foodItemId?.foodName || 'Unnamed Item'}</p>
-//                 <p className="text-gray-600 text-sm mt-1">
-//                     Price: <span className="text-orange-600 font-semibold">₹{item.foodItemId?.price ?? 'N/A'}</span>
-//                 </p>
-//                 <p className="text-xs text-gray-500 mt-2">
-//                     Total: <span className="text-orange-700 font-semibold">₹{(item.foodItemId?.price ?? 0) * quantity}</span>
-//                 </p>
-//             </div>
-
-//             {/* Actions */}
-//             <div className="flex flex-col sm:flex-row items-center gap-2">
-//                 {/* Quantity Selector */}
-//                 <input
-//                     type="number"
-//                     min="1"
-//                     value={quantity}
-//                     onChange={handleQuantityChange}
-//                     className="w-16 border rounded px-2 py-1 text-center focus:outline-none focus:border-orange-500 bg-gray-50"
-//                 />
-
-//                 {/* Update Button */}
-//                 <button
-//                     onClick={() => onUpdate(item.foodItemId._id, quantity)}
-//                     className="bg-orange-500 hover:bg-orange-600 text-white text-sm px-3 py-1 rounded transition font-medium shadow"
-//                 >
-//                     Update
-//                 </button>
-
-//                 {/* Remove Button */}
-//                 <button
-//                     onClick={() => onRemove(item._id)}
-//                     className="bg-red-100 hover:bg-red-200 text-red-600 text-sm px-3 py-1 rounded transition font-medium shadow"
-//                 >
-//                     Remove
-//                 </button>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default CartItem;
-
-
-// import React, { useState, useEffect } from 'react';
-
-// const CartItem = ({ item, onUpdate, onRemove }) => {
-//     const [quantity, setQuantity] = useState(item.quantity);
-
-//     useEffect(() => {
-//         setQuantity(item.quantity);
-//     }, [item.quantity]);
-
-//     const food = item.foodItemId || {};
-
-//     const imageUrl = 'https://via.placeholder.com/80'; // Until you add images field
-
-//     return (
-//         <div className="flex flex-col sm:flex-row items-center gap-4 p-4 border-b bg-white shadow-sm rounded-lg hover:shadow-lg transition mb-3">
-//             <img
-//                 src={imageUrl}
-//                 alt={food.foodName || 'Food Image'}
-//                 className="w-20 h-20 rounded object-cover border"
-//             />
-
-//             <div className="flex-1 text-left">
-//                 <p className="font-bold text-lg text-gray-900">{food.foodName || 'Unnamed Item'}</p>
-//                 <p className="text-gray-600 text-sm mt-1">
-//                     Price: <span className="text-orange-600 font-semibold">₹{food.price ?? 'N/A'}</span>
-//                 </p>
-//                 <p className="text-xs text-gray-500 mt-2">
-//                     Total: <span className="text-orange-700 font-semibold">₹{(food.price ?? 0) * quantity}</span>
-//                 </p>
-//             </div>
-
-//             <div className="flex flex-col sm:flex-row items-center gap-2">
-//                 <input
-//                     type="number"
-//                     min="1"
-//                     value={quantity}
-//                     onChange={e => setQuantity(Math.max(1, Number(e.target.value)))}
-//                     className="w-16 border rounded px-2 py-1 text-center focus:outline-none focus:border-orange-500 bg-gray-50"
-//                 />
-//                 <button
-//                     onClick={() => onUpdate(item.foodItemId._id, quantity)}
-//                     className="bg-orange-500 hover:bg-orange-600 text-white text-sm px-3 py-1 rounded transition font-medium shadow"
-//                 >
-//                     Update
-//                 </button>
-//                 <button
-//                     onClick={() => onRemove(item._id)}
-//                     className="bg-red-100 hover:bg-red-200 text-red-600 text-sm px-3 py-1 rounded transition font-medium shadow"
-//                 >
-//                     Remove
-//                 </button>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default CartItem;
-
-
-// import React, { useState, useEffect } from 'react';
-
-// const CartItem = ({ item, onUpdate, onRemove }) => {
-//     const [quantity, setQuantity] = useState(item.quantity);
-
-//     useEffect(() => {
-//         setQuantity(item.quantity);
-//     }, [item.quantity]);
-
-//     const food = item.foodItemId || {};
-
-//     // Image fallback logic supporting multiple possible data shapes
-//     const imageUrl =
-//         (food.images && food.images.length > 0 && (
-//             typeof food.images[0] === 'string'
-//                 ? food.images[0]
-//                 : food.images[0]?.imageUrl
-//         )) ||
-//         food.image?.[0] ||
-//         food.image ||
-//         'https://via.placeholder.com/80';
-
-//     return (
-//         <div className="flex flex-col sm:flex-row items-center gap-4 p-4 border-b bg-white shadow-sm rounded-lg hover:shadow-lg transition mb-3">
-//             {/* Food Image */}
-//             <img
-//                 src={imageUrl}
-//                 alt={food.foodName || 'Food Image'}
-//                 className="w-20 h-20 rounded object-cover border"
-//             />
-
-//             {/* Info */}
-//             <div className="flex-1 text-left">
-//                 <p className="font-bold text-lg text-gray-900">{food.foodName || 'Unnamed Item'}</p>
-//                 <p className="text-gray-600 text-sm mt-1">
-//                     Price: <span className="text-orange-600 font-semibold">₹{food.price ?? 'N/A'}</span>
-//                 </p>
-//                 <p className="text-xs text-gray-500 mt-2">
-//                     Total: <span className="text-orange-700 font-semibold">₹{(food.price ?? 0) * quantity}</span>
-//                 </p>
-//             </div>
-
-//             {/* Actions */}
-//             <div className="flex flex-col sm:flex-row items-center gap-2">
-//                 {/* Quantity Selector */}
-//                 <input
-//                     type="number"
-//                     min="1"
-//                     value={quantity}
-//                     onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
-//                     className="w-16 border rounded px-2 py-1 text-center focus:outline-none focus:border-orange-500 bg-gray-50"
-//                 />
-
-//                 {/* Update Button */}
-//                 <button
-//                     onClick={() => onUpdate(item.foodItemId._id, quantity)}
-//                     className="bg-orange-500 hover:bg-orange-600 text-white text-sm px-3 py-1 rounded transition font-medium shadow"
-//                 >
-//                     Update
-//                 </button>
-
-//                 {/* Remove Button */}
-//                 <button
-//                     onClick={() => onRemove(item._id)}
-//                     className="bg-red-100 hover:bg-red-200 text-red-600 text-sm px-3 py-1 rounded transition font-medium shadow"
-//                 >
-//                     Remove
-//                 </button>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default CartItem;
-
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Minus, Plus, Trash2, Star } from 'lucide-react';
 
 const CartItem = ({ item, onUpdate, onRemove }) => {
     const [quantity, setQuantity] = useState(item.quantity);
@@ -287,57 +9,71 @@ const CartItem = ({ item, onUpdate, onRemove }) => {
     }, [item.quantity]);
 
     const food = item.foodItemId || {};
-
     const imageUrl =
-        (food.images && food.images.length > 0 && (
-            typeof food.images[0] === 'string'
-                ? food.images[0]
-                : food.images[0]?.imageUrl
-        )) ||
-        food.image?.[0] ||
-        food.image ||
-        'https://via.placeholder.com/80';
+        (food.images?.[0]?.imageUrl || food.images?.[0] || food.image?.[0] || food.image) ??
+        'https://via.placeholder.com/200';
+
+    const handleQuantityChange = (delta) => {
+        const newQty = quantity + delta;
+
+        if (newQty <= 0) {
+            onRemove(item._id); // remove item if qty is zero
+        } else {
+            setQuantity(newQty);
+            onUpdate(item.foodItemId._id, newQty);
+        }
+    };
+
 
     return (
-        <div className="flex flex-col sm:flex-row items-center gap-4 p-4 border-b bg-white shadow-sm rounded-lg hover:shadow-lg transition mb-3">
+        <div className="bg-white rounded-xl shadow-sm shadow-gray-400 transition-all overflow-hidden">
             <img
                 src={imageUrl}
-                alt={food.foodName || 'Food Image'}
-                className="w-20 h-20 rounded object-cover border"
+                alt={food.foodName || 'Food'}
+                className="w-full h-55 object-cover hover:scale-105 transition-all duration-500"
             />
 
-            <div className="flex-1 text-left">
-                <p className="font-bold text-lg text-gray-900">{food.foodName || 'Unnamed Item'}</p>
-                <p className="text-gray-600 text-sm mt-1">
-                    Price: <span className="text-orange-600 font-semibold">₹{food.price ?? 'N/A'}</span>
-                </p>
-                <p className="text-xs text-gray-500 mt-2">
-                    Total: <span className="text-orange-700 font-semibold">₹{(food.price ?? 0) * quantity}</span>
-                </p>
-            </div>
+            <div className="p-4 flex flex-col gap-2">
+                <p className="text-sm text-gray-500">{food.category || 'Cuisine'}</p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-2">
-                <input
-                    type="number"
-                    min="1"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
-                    className="w-16 border rounded px-2 py-1 text-center focus:outline-none focus:border-orange-500 bg-gray-50"
-                />
+                <h3 className="text-lg font-semibold text-gray-800 truncate">
+                    {food.foodName || 'Food Name'}
+                </h3>
 
-                <button
-                    onClick={() => onUpdate(item.foodItemId._id, quantity)}
-                    className="bg-orange-500 hover:bg-orange-600 text-white text-sm px-3 py-1 rounded transition font-medium shadow"
-                >
-                    Update
-                </button>
+                <div className="flex items-center gap-2 text-sm">
+                    <span className="text-orange-600 font-semibold">₹{food.price || '0'}</span>
+                    <span className="line-through text-gray-400 text-sm">₹{(food.price || 0) + 5}</span>
+                    <span className="flex items-center text-sm text-yellow-600 ml-auto">
+                        <Star size={14} fill="orange" className="mr-1" />
+                        {food.rating || '4.5'}
+                    </span>
+                </div>
 
-                <button
-                    onClick={() => onRemove(item._id)}
-                    className="bg-red-100 hover:bg-red-200 text-red-600 text-sm px-3 py-1 rounded transition font-medium shadow"
-                >
-                    Remove
-                </button>
+                {/* Quantity Controller */}
+                <div className="flex items-center justify-between mt-3">
+                    <div className="flex items-center border rounded-md bg-gray-100 overflow-hidden">
+                        <button
+                            onClick={() => handleQuantityChange(-1)}
+                            className="px-3 py-1 text-gray-600 hover:text-orange-600"
+                        >
+                            <Minus size={14} className='cursor-pointer' />
+                        </button>
+                        <span className="px-4 py-1 font-medium text-sm">{quantity}</span>
+                        <button
+                            onClick={() => handleQuantityChange(1)}
+                            className="px-3 py-1 text-gray-600 hover:text-orange-600"
+                        >
+                            <Plus size={14} className='cursor-pointer' />
+                        </button>
+                    </div>
+
+                    <button
+                        onClick={() => onRemove(item._id)}
+                        className="ml-2 px-4 py-1 text-sm text-orange-500 border border-orange-400 rounded-full hover:bg-orange-50 transition-all duration-300 cursor-pointer"
+                    >
+                        Remove
+                    </button>
+                </div>
             </div>
         </div>
     );

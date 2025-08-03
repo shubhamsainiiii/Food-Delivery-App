@@ -1,5 +1,6 @@
 const admin = require('../Models/AdminModel');
 const restaurant = require('../Models/RestaurantOwnerModel');
+const deliveryboy = require('../Models/DeliverBoyModel');
 const user = require('../Models/UserModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -66,7 +67,6 @@ exports.handleRestaurantApproval = async (req, res) => {
         { restaurantId: updated._id, role: 'restaurant' },
         { status: action }
     );
-
     res.json({ message: `Restaurant ${action}`, restaurant: updated });
 };
 
@@ -78,6 +78,15 @@ exports.getallrestaurant = async (req, res) => {
     } catch (error) {
         console.error("Error fetching restaurants:", error);
         res.status(500).send({ success: false, message: 'Failed to fetch restaurants', error: error.message });
+    }
+};
+exports.getalldeliveryboy = async (req, res) => {
+    try {
+        const deliveryboys = await deliveryboy.find();
+        res.status(202).send({ success: true, data: deliveryboys });
+    } catch (error) {
+        console.error("Error fetching delivery boy:", error);
+        res.status(500).send({ success: false, message: 'Failed to fetch delivery boy', error: error.message });
     }
 };
 
@@ -117,6 +126,31 @@ exports.verifyOtp = async (req, res) => {
     }
 };
 
-// exports.forgetpassword = async (req, res) => {
-//     const
-// }
+
+exports.handleDeliveryBoyApproval = async (req, res) => {
+    const { id, action } = req.params;
+    if (!['approved', 'rejected'].includes(action)) {
+        return res.status(404).json({ message: "Invalid action" });
+    }
+
+    const updated = await deliveryboy.findByIdAndUpdate(id, { status: action }, { new: true });
+    if (!updated) return res.status(404).json({ message: "Delivery boy not found" });
+
+    await user.findOneAndUpdate(
+        { deliveryBoyId: updated._id, role: 'delivery-boy' },
+        { status: action }
+    );
+    res.json({ message: `Delivery boy ${action}`, deliveryBoy: updated });
+};
+
+exports.getalluser = async (req, res) => {
+    try {
+        const userdata = await user.find({ role: 'user' })
+        return res.status(202).send({ success: true, data: userdata });
+    }
+    catch (error) {
+        console.log("error", error);
+        return res.status(500).send({ success: false, message: "failed to fetch users", error: error.message })
+    }
+}
+

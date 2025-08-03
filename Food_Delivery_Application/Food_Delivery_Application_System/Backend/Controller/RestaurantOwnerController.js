@@ -128,31 +128,3 @@ exports.getallrestaurant = async (req, res) => {
         });
     }
 };
-
-
-// exports.searchRestaurants = async (req, res) => {
-//     try {
-//         const { query } = req.query;
-//         if (!query) {
-//             return res.status(400).json({ message: 'Query parameter is required' });
-//         }
-
-//         // Case-insensitive regex search on restaurantName and cuisineType (optional)
-//         const restaurants = await Restaurant.find({
-//             status: 'approved', // Optional: only approved restaurants
-//             $or: [
-//                 { restaurantName: { $regex: query, $options: 'i' } },
-//                 { cuisineType: { $regex: query, $options: 'i' } }
-//             ]
-//         });
-
-//         return res.json(restaurants);
-//     } catch (error) {
-//         console.error('Error searching restaurants:', error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// };
-
-// exports.getresaturant = async (req, res) => {
-//     // const
-// }

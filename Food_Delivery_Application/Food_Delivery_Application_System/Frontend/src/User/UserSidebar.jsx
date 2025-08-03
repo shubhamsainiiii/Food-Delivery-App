@@ -85,7 +85,8 @@ const UserSidebar = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setUser(res.data.user);
-            } catch (err) {
+            } catch (error) {
+                console.log(error)
                 setUser(null); // fallback
             }
         };
@@ -104,9 +105,9 @@ const UserSidebar = () => {
     ];
 
     return (
-        <aside className="w-64 bg-white p-6 flex-shrink-0 border-r border-gray-200 hidden md:flex flex-col">
+        <aside className="w-64 bg-gradient-to-br from-[#faebd7] to-[#f7fafc]p-6 flex-shrink-0 border-r border-gray-500 hidden md:flex flex-col">
             <div className="text-center mb-10">
-                <div className="relative w-24 h-24 mx-auto mb-3">
+                <div className="relative w-28 h-28 mt-10 m-auto mb-5">
                     <img
                         className="w-full h-full rounded-full object-cover"
                         src={user?.image ? user.image : " "}

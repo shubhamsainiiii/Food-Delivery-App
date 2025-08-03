@@ -28,7 +28,8 @@ const UserProfile = () => {
             setUser(res.data.user); // important: set user object inside `user` property
             setImagePreview(res.data.user?.image);
             console.log('Update response:', res.data);
-        } catch (err) {
+        } catch (error) {
+            console.log("error", error)
             toast.error("Failed to fetch profile.");
         }
     };
@@ -59,10 +60,14 @@ const UserProfile = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setUser(res.data); // update user state with response user document
+            localStorage.setItem("user", JSON.stringify(res.data));
+            window.dispatchEvent(new Event("profileUpdated"));
+
             setModal(null);
             toast.success("Profile updated!");
             navigate('/user-dashboard')
-        } catch (err) {
+        } catch (error) {
+            console.log("error", error)
             toast.error("Update failed.");
         }
     };
@@ -88,7 +93,10 @@ const UserProfile = () => {
             setImagePreview(res.data.image);
             setModal(null);
             toast.success("Profile image updated!");
-        } catch (err) {
+            localStorage.setItem("user", JSON.stringify(res.data));
+            window.dispatchEvent(new Event("profileUpdated"));
+        } catch (error) {
+            console.log("error", error)
             toast.error("Image upload failed.");
         }
     };
@@ -139,7 +147,7 @@ const UserProfile = () => {
                         </div>
                         <button
                             onClick={() => handleEdit("name")}
-                            className="bg-white border border-orange-400 text-orange-500 rounded-lg px-6 py-1.5 hover:bg-orange-50 transition text-sm"
+                            className="bg-white border border-orange-400 text-orange-500 rounded-lg px-6 py-1.5 hover:bg-orange-50 transition-all cursor-pointer duration-300 text-sm"
                         >
                             Edit
                         </button>
@@ -168,7 +176,7 @@ const UserProfile = () => {
                         </div>
                         <button
                             onClick={() => handleEdit("phone")}
-                            className="bg-white border border-orange-400 text-orange-500 rounded-lg px-6 py-1.5 hover:bg-orange-50 transition text-sm">
+                            className="bg-white border border-orange-400 text-orange-500 rounded-lg px-6 py-1.5 hover:bg-orange-50 transition-all cursor-pointer duration-300 text-sm">
                             Change
                         </button>
                     </div>
@@ -184,7 +192,7 @@ const UserProfile = () => {
                         </div>
                         <button
                             onClick={() => toast.info("Password change via separate flow")}
-                            className="bg-white border border-orange-400 text-orange-500 rounded-lg px-6 py-1.5 hover:bg-orange-50 transition text-sm"
+                            className="bg-white border border-orange-400 text-orange-500 rounded-lg px-6 py-1.5 hover:bg-orange-50 transition-all cursor-pointer duration-300 text-sm"
                         >
                             Change
                         </button>
@@ -273,7 +281,7 @@ const UserProfile = () => {
                                     className="hidden"
                                     ref={fileRef}
                                     required
-                                    onChange={() => setInputVal('')} // clear inputVal in case user selects a file here
+                                    onChange={() => setInputVal('')}
                                 />
                             </label>
 
@@ -282,13 +290,13 @@ const UserProfile = () => {
                                 <button
                                     type="button"
                                     onClick={() => setModal(null)}
-                                    className="px-5 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-400"
+                                    className="px-5 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-400 cursor-pointer transition-all duration-300"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-5 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-orange-400 disabled:opacity-50"
+                                    className="px-5 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-orange-400 disabled:opacity-50 cursor-pointer transition-all duration-300"
                                 >
                                     Upload
                                 </button>

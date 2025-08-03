@@ -1,7 +1,7 @@
 const foodItem = require('../Models/FoodModel');
 const foodImage = require('../Models/FoodImageModel');
 const { uploadImage } = require('../Helper/Helper');
-
+const mongoose = require('mongoose')
 
 exports.addfood = async (req, res) => {
     try {
@@ -58,3 +58,99 @@ exports.getallfood = async (req, res) => {
         return res.status(500).send({ message: "An error occurred while fetching food items.", error: error.message });
     }
 }
+
+exports.getFoodsByRestaurant = async (req, res) => {
+    try {
+        if (!req.user || !req.user.restaurantId) {
+            return res.status(403).json({ message: "Unauthorized: Missing restaurant info" });
+        }
+        const restaurantId = req.user.restaurantId;
+        const foods = await foodItem.aggregate([
+            { $match: { restaurantId: restaurantId } },
+            {
+                $lookup: {
+                    from: "food-images",
+                    localField: "_id",
+                    foreignField: "foodItemId",
+                    as: "images"
+                }
+            }
+        ]);
+
+        res.status(200).json({ foods });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch foods", error: error.message });
+    }
+};
+
+
+exports.updateFoodItem = async (req, res) => {
+    try {
+        const foodId = req.params.id;
+        const updates = req.body;
+
+        if (!req.user || !req.user.restaurantId) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // Ensure the food item belongs to the logged-in restaurant owner
+        const food = await foodItem.findOne({ _id: foodId, restaurantId: req.user.restaurantId });
+
+        if (!food) {
+            return res.status(404).json({ message: "Food item not found or access denied" });
+        }
+
+        // Update allowed fields (you can also validate fields if you want)
+        Object.assign(food, updates);
+        await food.save();
+
+        res.status(200).json({ message: "Food item updated", food });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to update food", error: error.message });
+    }
+};
+
+
+exports.getFoodById = async (req, res) => {
+    try {
+        const foodId = req.params.id;
+        console.log("foodId", foodId)
+
+        const food = await foodItem.aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(foodId) } },
+            { $lookup: { from: "food-images", localField: "_id", foreignField: "foodItemId", as: "images" } }
+        ]);
+        console.log("food", food)
+        if (!food || food.length === 0) {
+            return res.status(404).json({ message: "Food item not found" });
+        }
+
+        res.status(200).json({ food: food[0] });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch food", error: error.message });
+    }
+};
+
+
+exports.deleteFoodItem = async (req, res) => {
+    try {
+        const foodId = req.params.id;
+
+        if (!req.user || !req.user.restaurantId) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        const food = await foodItem.findOneAndDelete({ _id: foodId, restaurantId: req.user.restaurantId });
+
+        if (!food) {
+            return res.status(404).json({ message: "Food item not found or access denied" });
+        }
+
+        // Optionally, delete corresponding images as well:
+        await foodImage.deleteMany({ foodId: foodId });
+
+        res.status(200).json({ message: "Food item deleted" });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to delete food", error: error.message });
+    }
+};

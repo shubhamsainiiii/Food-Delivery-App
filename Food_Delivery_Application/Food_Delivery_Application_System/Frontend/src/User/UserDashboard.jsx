@@ -95,7 +95,7 @@ const UserDashboard = () => {
     const { user, stats, recentOrders } = dashboardData;
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen mt-18 bg-gradient-to-br from-[#faebd7] to-[#f7fafc]">
             <UserSidebar user={user} />
             <main className="flex-1 p-4 sm:p-8">
                 <div className="mb-8">

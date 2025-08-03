@@ -19,7 +19,12 @@ const deliveryBoySchema = new mongoose.Schema({
             type: [Number],
             default: [0, 0]
         },
-    }
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending'
+    },
 })
 deliveryBoySchema.index({ currentLocation: "2dsphere" });
 

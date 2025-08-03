@@ -1,80 +1,101 @@
-// import React from 'react';
-// import { Link } from 'react-router-dom';
-
-// export default function Navbar() {
-//     return (
-//         <header className="bg-white shadow">
-//             <div className="container mx-auto flex items-center justify-between py-4 px-6">
-//                 <Link to="/" className="text-xl font-bold">ORDERIT</Link>
-
-//                 <nav className="hidden md:flex space-x-6">
-//                     <Link to="/" className="hover:text-orange-600">Home</Link>
-//                     <Link to="/about" className="hover:text-orange-600">About</Link>
-//                     <Link to="/menu" className="hover:text-orange-600">Menu</Link>
-//                     <Link to="/offers" className="hover:text-orange-600">Category</Link>
-//                     <Link to="/restaurants" className="hover:text-orange-600">Restaurants</Link>
-//                     <Link to="/contact" className="hover:text-orange-600">Contact Us</Link>
-//                 </nav>
-
-//                 <div className="flex items-center space-x-4">
-//                     <Link to="/login" className="hidden md:block px-4 py-2 border rounded">Log In</Link>
-//                     <Link to="/signup" className="px-4 py-2 bg-orange-500 text-white rounded">Sign Up</Link>
-//                 </div>
-//             </div>
-//         </header>
-//     );
-// }
-
-
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaShoppingCart } from 'react-icons/fa';
+import axios from 'axios';
 
 export default function Navbar() {
     const navigate = useNavigate();
-
+    const [cartCount, setCartCount] = useState(0);
+    const [userData, setUserData] = useState(() => JSON.parse(localStorage.getItem("user")));
     const token = localStorage.getItem("userToken");
-    const userData = JSON.parse(localStorage.getItem("user")); // optional: to show name/role
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        navigate("/login");
+    const handleCartClick = () => {
+        if (!token) {
+            navigate("/login");
+        } else {
+            navigate("/user/orders");
+        }
     };
 
+    const fetchCartCount = async () => {
+        try {
+            if (token) {
+                const res = await axios.get("http://localhost:8080/Cart/getcart", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                const totalItems = res.data.reduce((acc, item) => acc + (item.quantity || 1), 0);
+                setCartCount(totalItems);
+            }
+        } catch (error) {
+            console.error("Failed to fetch cart count:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCartCount();
+
+        const handleCartUpdated = () => {
+            fetchCartCount(); // refresh cart count
+        };
+
+        const handleProfileUpdated = () => {
+            const updatedUser = JSON.parse(localStorage.getItem("user"));
+            setUserData(updatedUser);
+        };
+
+        // Listen to custom cartUpdated event
+        window.addEventListener("cartUpdated", handleCartUpdated);
+        window.addEventListener("profileUpdated", handleProfileUpdated);
+
+        return () => {
+            window.removeEventListener("cartUpdated", handleCartUpdated);
+            window.removeEventListener("profileUpdated", handleProfileUpdated);
+        };
+    }, [token]);
+
+
     return (
-        <header className="bg-white shadow">
+        <header className="bg-white shadow fixed top-0 w-full z-50">
             <div className="container mx-auto flex items-center justify-between py-4 px-6">
-                <Link to="/" className="text-xl font-bold">ORDERIT</Link>
+                <Link to="/" className="text-xl font-bold">DishKart</Link>
 
                 <nav className="hidden md:flex space-x-6">
-                    <Link to="/" className="hover:text-orange-600">Home</Link>
-                    <Link to="/about" className="hover:text-orange-600">About</Link>
-                    <Link to="/menu" className="hover:text-orange-600">Menu</Link>
-                    <Link to="/offers" className="hover:text-orange-600">Category</Link>
-                    <Link to="/restaurants" className="hover:text-orange-600">Restaurants</Link>
-                    <Link to="/contact" className="hover:text-orange-600">Contact Us</Link>
+                    <Link to="/home" className="hover:text-orange-600 transition-all duration-300">Home</Link>
+                    <Link to="/about" className="hover:text-orange-600 transition-all duration-300">About</Link>
+                    <Link to="/menu" className="hover:text-orange-600 transition-all duration-300">Menu</Link>
+                    <Link to="/offers" className="hover:text-orange-600 transition-all duration-300">Category</Link>
+                    <Link to="/restaurants" className="hover:text-orange-600 transition-all duration-300">Restaurants</Link>
+                    <Link to="/contact" className="hover:text-orange-600 transition-all duration-300">Contact Us</Link>
+                    <Link to="/faq" className="hover:text-orange-600 transition-all duration-300">FAQs</Link>
                 </nav>
 
                 <div className="flex items-center space-x-4">
+                    {/* Cart Icon */}
+                    <div className="relative cursor-pointer" onClick={handleCartClick}>
+                        <FaShoppingCart className="text-xl text-black" />
+                        {token && cartCount > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                                {cartCount}
+                            </span>
+                        )}
+                    </div>
+
+                    {/* User Auth */}
                     {token ? (
                         <>
-                            <Link
-                                to={`/${userData?.role}/userdashboard`}
-                                className="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200"
-                            >
-                                Profile
-                            </Link>
-                            <button
-                                onClick={handleLogout}
-                                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                            >
-                                Logout
-                            </button>
+                            <img
+                                src={userData?.image || "https://via.placeholder.com/40"}
+                                alt="profile"
+                                className="w-10 h-10 rounded-full object-cover border border-gray-300 cursor-pointer"
+                                onClick={() => navigate(`/${userData?.role}/dashboard`)}
+                            />
+
                         </>
                     ) : (
                         <>
-                            <Link to="/login" className="hidden md:block px-4 py-2 border rounded">
+                            <Link to="/login" className="px-4 py-2 border rounded">
                                 Log In
                             </Link>
                             <Link to="/signup" className="px-4 py-2 bg-orange-500 text-white rounded">
@@ -87,79 +108,3 @@ export default function Navbar() {
         </header>
     );
 }
-
-
-// import React, { useEffect, useState } from 'react';
-// import { Link, useNavigate } from 'react-router-dom';
-
-// export default function Navbar() {
-//     const navigate = useNavigate();
-//     // Use a state variable for token
-//     const [token, setToken] = useState(localStorage.getItem("userToken"));
-//     const [userData, setUserData] = useState(() => {
-//         const user = localStorage.getItem("user");
-//         return user ? JSON.parse(user) : null;
-//     });
-
-//     // Listen to storage change in same window (for completeness)
-//     useEffect(() => {
-//         const syncLogout = () => {
-//             setToken(localStorage.getItem("userToken"));
-//             const user = localStorage.getItem("user");
-//             setUserData(user ? JSON.parse(user) : null);
-//         };
-//         window.addEventListener('storage', syncLogout);
-//         return () => window.removeEventListener('storage', syncLogout);
-//     }, []);
-
-//     const handleLogout = () => {
-//         localStorage.removeItem("userToken");
-//         localStorage.removeItem("user");
-//         setToken(null);
-//         setUserData(null);
-//         navigate("/login");
-//     };
-
-//     return (
-//         <header className="bg-white shadow">
-//             <div className="container mx-auto flex items-center justify-between py-4 px-6">
-//                 <Link to="/" className="text-xl font-bold">ORDERIT</Link>
-//                 <nav className="hidden md:flex space-x-6">
-//                     <Link to="/" className="hover:text-orange-600">Home</Link>
-//                     <Link to="/about" className="hover:text-orange-600">About</Link>
-//                     <Link to="/menu" className="hover:text-orange-600">Menu</Link>
-//                     <Link to="/offers" className="hover:text-orange-600">Category</Link>
-//                     <Link to="/restaurants" className="hover:text-orange-600">Restaurants</Link>
-//                     <Link to="/contact" className="hover:text-orange-600">Contact Us</Link>
-//                 </nav>
-//                 <div className="flex items-center space-x-4">
-//                     {token ? (
-//                         <>
-//                             <Link
-//                                 to={`/${userData?.role}/userdashboard`}
-//                                 className="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200"
-//                             >
-//                                 Profile
-//                             </Link>
-//                             <button
-//                                 onClick={handleLogout}
-//                                 className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-//                             >
-//                                 Logout
-//                             </button>
-//                         </>
-//                     ) : (
-//                         <>
-//                             <Link to="/login" className="hidden md:block px-4 py-2 border rounded">
-//                                 Log In
-//                             </Link>
-//                             <Link to="/signup" className="px-4 py-2 bg-orange-500 text-white rounded">
-//                                 Sign Up
-//                             </Link>
-//                         </>
-//                     )}
-//                 </div>
-//             </div>
-//         </header>
-//     );
-// }

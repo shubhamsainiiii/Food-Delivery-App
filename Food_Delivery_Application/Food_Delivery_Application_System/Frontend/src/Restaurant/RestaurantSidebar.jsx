@@ -38,7 +38,7 @@ const RestaurantSidebar = () => {
                     </NavLink>
 
                     <NavLink
-                        to="/orders"
+                        to="/restaurant/orders"
                         className={({ isActive }) =>
                             `${baseLinkClass} ${isActive ? activeLinkClass : 'text-gray-400 hover:text-white hover:bg-gray-700'}`
                         }
@@ -56,7 +56,7 @@ const RestaurantSidebar = () => {
                     </NavLink>
 
                     <NavLink
-                        to="/dishes"
+                        to="/restaurant/dishes"
                         className={({ isActive }) =>
                             `${baseLinkClass} ${isActive ? activeLinkClass : 'text-gray-400 hover:text-white hover:bg-gray-700'}`
                         }

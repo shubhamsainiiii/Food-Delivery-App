@@ -20,7 +20,7 @@ exports.SignupDeliveryBoy = async (req, res) => {
         const deliveryBoyData = new deliveryBoy(data);
         await deliveryBoyData.save();
         console.log("delivery Boy data :", deliveryBoyData);
-        const newuser = { ...data, role: 'delivery-boy', deliveryBoyId: deliveryBoyData._id };
+        const newuser = { name, email, phone, password: hashpass, status: 'pending', role: 'delivery-boy', deliveryBoyId: deliveryBoyData._id };
         const userData = new user(newuser);
         await userData.save()
         console.log('delivery Boy data in user table : ', userData)

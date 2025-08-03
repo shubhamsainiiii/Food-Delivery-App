@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { FaUserCircle, FaEnvelope, FaLock } from 'react-icons/fa';
+import { FaUserCircle, FaEnvelope, FaLock, FaEyeSlash, FaEye } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [form, setForm] = useState({ email: '', password: '' });
     const [st, setSt] = useState("")
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false)
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -55,22 +56,28 @@ const Login = () => {
                 localStorage.setItem('userRole', res.data.role || '');
                 localStorage.setItem("user", JSON.stringify(res.data.user))
                 if (res.data.role === "user") {
-                    navigate("/user/userdashboard")
+                    navigate("/user/dashboard")
                 }
                 else if (res.data.role === "admin") {
-                    navigate("/admin-dashboard")
+                    navigate("/admin/dashboard")
                 }
                 else if (res.data.role === "restaurant") {
                     if (user.status === "pending" || user.status === "rejected") {
                         navigate("/login")
                     }
                     else {
-                        navigate("/rd")
+                        navigate("/restaurant/dashboard")
                     }
 
                 }
                 else if (res.data.role === "delivery-boy") {
-                    navigate("/delivery-dashboard")
+                    if (user.status === "pending" || user.status === "rejected") {
+                        navigate("/login")
+                    }
+                    else {
+                        navigate("/deliveryboy/dashboard")
+                    }
+
                 }
             }
         } catch (error) {
@@ -105,20 +112,28 @@ const Login = () => {
                         />
                         <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
                     </div>
+
                     <div className="relative mb-6">
                         <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             name="password"
                             placeholder="Password"
                             value={form.password}
                             onChange={handleChange}
-                            className="w-full pl-12 pr-4 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base"
+                            className="w-full pl-12 pr-10 py-3 rounded-md bg-white/10 text-white border-0 outline-none placeholder-white/60 text-base"
                             required
                             style={{ background: 'transparent' }}
                         />
+                        <div
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 cursor-pointer"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </div>
                         <div className="absolute left-0 right-0 bottom-[-2px] border-t border-white/20"></div>
                     </div>
+
                     <div className="flex items-center justify-between mb-6">
                         <label className="flex items-center text-sm text-white">
                             <input type="checkbox" className="mr-2 accent-white/70" />
@@ -139,7 +154,7 @@ const Login = () => {
                 </form>
                 <div className="mt-8">
                     <a
-                        href="/"
+                        href="/signup"
                         className="block w-full py-2.5 text-center rounded-lg text-white/75 font-semibold tracking-wider bg-white/10 hover:bg-white/20 transition-all duration-300"
                         style={{ letterSpacing: ".7px" }}
                     >

@@ -1,5 +1,5 @@
-// src/components/Sidebar.jsx
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Sidebar = ({ isOpen }) => {
     return (
@@ -7,17 +7,18 @@ const Sidebar = ({ isOpen }) => {
             ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
             <div className="font-bold text-xl text-yellow-600 mb-6">🍽️ FoodStar</div>
             <nav className="flex flex-col gap-4 text-gray-600 text-sm">
-                <a className="font-semibold text-yellow-600" href="#">Dashboard</a>
-                <a href="#">Total Restaurant</a>
-                <a href="#">Total Users</a>
-                <a href="#">Total Delivery-Boys</a>
-                <a href="#">Total Revenue</a>
-                <a href="#">Wallet</a>
-                <a href="#">Calendar</a>
-                <a href="#">Settings</a>
+                <Link className="font-semibold text-yellow-600" to="#">Dashboard</Link>
+                <Link to="/admin/restaurants">Total Restaurant</Link>
+                <Link to="#">Total Users</Link>
+                <Link to="/admin/deliveryboy">Total Delivery-Boys</Link>
+                <Link to="#">Total Revenue</Link>
+                <Link to="#">Wallet</Link>
+                <Link to="#">Calendar</Link>
+                <Link to="#">Settings</Link>
             </nav>
         </aside>
     );
 };
 
 export default Sidebar;
+
