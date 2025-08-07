@@ -2,6 +2,7 @@ const deliveryBoy = require('../Models/DeliverBoyModel');
 const user = require('../Models/UserModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { uploadImage } = require('../Helper/Helper')
 const secretkey = process.env.SECRETKEY;
 
 exports.SignupDeliveryBoy = async (req, res) => {
@@ -53,3 +54,115 @@ exports.loginDeliveryBoy = async (req, res) => {
         return res.status(500).send({ message: error.message });
     }
 }
+
+
+
+
+// exports.updateDeliveryBoy = async (req, res) => {
+//     try {
+//         const deliveryBoyId = req.user._id; // assuming login token gives this
+//         console.log("iddddddddd", deliveryBoyId)
+//         const { name, phone, address, vehicleNumber, aadharNumber } = req.body;
+
+//         // Find delivery boy first
+//         const deliveryBoyData = await deliveryBoy.findById(deliveryBoyId);
+//         if (!deliveryBoyData) {
+//             return res.status(404).send({ message: "Delivery boy not found" });
+//         }
+//         console.log("deliveryboyyyyyy", deliveryBoyData)
+//         // Handle image upload if present
+//         if (req.files && req.files.profileImage) {
+//             const uploadedImages = await uploadImage({ images: req.files.profileImage });
+//             if (uploadedImages.length > 0) {
+//                 deliveryBoyData.profileImage = uploadedImages[0].secure_url;
+//             }
+//         }
+
+//         // Update fields
+//         if (name) deliveryBoyData.name = name;
+//         if (phone) deliveryBoyData.phone = phone;
+//         if (address) deliveryBoyData.address = address;
+//         if (vehicleNumber) deliveryBoyData.vehicleNumber = vehicleNumber;
+//         if (aadharNumber) deliveryBoyData.aadharNumber = aadharNumber;
+
+//         // Save updated document
+//         await deliveryBoyData.save();
+
+//         return res.status(200).send({
+//             message: "Delivery boy updated successfully",
+//             deliveryBoy: deliveryBoyData
+//         });
+//     } catch (error) {
+//         console.error("Update Error:", error);
+//         return res.status(500).send({
+//             message: "Failed to update delivery boy",
+//             error: error.message
+//         });
+//     }
+// };
+
+exports.updateDeliveryBoy = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // 1. Find the logged-in user
+        const userData = await user.findById(userId);
+        if (!userData || userData.role !== 'delivery-boy') {
+            return res.status(404).json({ message: "User not found or not a delivery boy" });
+        }
+
+        // 2. Get the deliveryBoyId from user document
+        const deliveryBoyId = userData.deliveryBoyId;
+        if (!deliveryBoyId) {
+            return res.status(404).json({ message: "Linked delivery boy not found in user" });
+        }
+
+        // 3. Find delivery boy document
+        const deliveryBoyData = await deliveryBoy.findById(deliveryBoyId);
+        if (!deliveryBoyData) {
+            return res.status(404).json({ message: "Delivery boy document not found" });
+        }
+
+        const { name, phone, address, vehicleNumber, aadharNumber } = req.body;
+
+        // 4. Handle image upload
+        if (req.files && req.files.image) {
+            const uploadedImages = await uploadImage({ images: req.files.image });
+            if (uploadedImages.length > 0) {
+                deliveryBoyData.image = uploadedImages[0].secure_url;
+                userData.image = uploadedImages[0].secure_url;
+            }
+        }
+
+        // 5. Update fields
+        if (name) {
+            deliveryBoyData.name = name;
+            userData.name = name;
+            // userData.image = image;
+        }
+        if (phone) {
+            deliveryBoyData.phone = phone;
+            userData.phone = phone;
+        }
+        if (address) deliveryBoyData.address = address;
+        if (vehicleNumber) deliveryBoyData.vehicleNumber = vehicleNumber;
+        if (aadharNumber) deliveryBoyData.aadharNumber = aadharNumber;
+
+        // 6. Save both
+        await deliveryBoyData.save();
+        await userData.save();
+
+        return res.status(200).json({
+            message: "Delivery boy and user updated successfully",
+            deliveryBoy: deliveryBoyData,
+            user: userData
+        });
+
+    } catch (error) {
+        console.error("Update Error:", error);
+        return res.status(500).json({
+            message: "Failed to update delivery boy",
+            error: error.message
+        });
+    }
+};

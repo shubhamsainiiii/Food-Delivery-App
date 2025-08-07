@@ -23,14 +23,14 @@ const WelcomePage = () => {
             heading: 'Fresh, Fast & Delicious.',
             subheading: 'Browse dishes, choose your meal, and we’ll take care of the rest.',
             buttonLabel: 'Start Your Order Now',
-            link: '/menu',
+            link: '/home',
         },
         {
             img: bg3,
             heading: 'Your Favorite Dishes, Just a Cart Away',
             subheading: 'Crave it. Click it. Enjoy it. We bring deliciousness right to your door.',
             buttonLabel: 'Order Now',
-            link: '/menu',
+            link: '/home',
         },
     ];
 
@@ -39,7 +39,7 @@ const WelcomePage = () => {
         infinite: true,
         autoplay: true,
         speed: 2000,
-        autoplaySpeed: 5000,
+        autoplaySpeed: 3000,
         slidesToShow: 1,
         slidesToScroll: 1,
         arrows: true,

@@ -5,6 +5,9 @@ const secretkey = process.env.SECRETKEY;
 const nodemailer = require('nodemailer');
 const moment = require('moment');
 const { uploadImage } = require('../Helper/Helper')
+const Order = require('../Models/OrderModel')
+const Address = require('../Models/AddressModel')
+const Invoice = require('../Models/InvoiceModel')
 
 exports.usersignup = async (req, res) => {
     try {
@@ -52,25 +55,83 @@ exports.loginuser = async (req, res) => {
     }
 }
 
+// exports.getuser = async (req, res) => {
+//     const curUser = req.user;
+//     try {
+//         if (!curUser) {
+//             return res.status(401).send({ message: "Unauthorized access" });
+//         }
+//         const userData = await user.findById(curUser._id).select("-password -otp -otpexpire");
+
+//         const stats = {
+//             orders: 0,
+//             addresses: 0,
+//         };
+
+//         const recentOrders = [];
+//         return res.status(200).send({ user: userData, stats, recentOrders });
+//     } catch (error) {
+//         return res.status(500).send({ message: error.message });
+//     }
+// };
+
+
+
+
+
+
 exports.getuser = async (req, res) => {
     const curUser = req.user;
     try {
         if (!curUser) {
             return res.status(401).send({ message: "Unauthorized access" });
         }
+
         const userData = await user.findById(curUser._id).select("-password -otp -otpexpire");
 
-        const stats = {
-            orders: 0,
-            addresses: 0,
-        };
+        // Count total orders
+        const totalOrders = await Order.countDocuments({ userId: curUser._id });
 
-        const recentOrders = [];
-        return res.status(200).send({ user: userData, stats, recentOrders });
+        // Count total addresses
+        const totalAddresses = await Address.countDocuments({ userId: curUser._id });
+
+        // Get recent 5 orders
+        const recentOrders = await Order.find({ userId: curUser._id })
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .populate("invoiceId");
+
+        // Prepare recentOrders array
+        const formattedRecentOrders = recentOrders.map(order => ({
+            _id: order._id,
+            orderId: order.invoiceId?._id || order._id,
+            createdAt: order.createdAt,
+            totalAmount: order.invoiceId?.total || 0,
+            status: order.status
+        }));
+
+        return res.status(200).send({
+            user: {
+                _id: userData._id,
+                name: userData.name,
+                email: userData.email,
+                phone: userData.phone,
+                image: userData.image,
+                memberSince: userData.createdAt
+            },
+            stats: {
+                orders: totalOrders,
+                addresses: totalAddresses
+            },
+            recentOrders: formattedRecentOrders
+        });
     } catch (error) {
+        console.error("getuser error:", error);
         return res.status(500).send({ message: error.message });
     }
 };
+
+
 
 exports.sendotp = async (req, res) => {
     const { email } = req.body;

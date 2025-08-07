@@ -110,28 +110,6 @@ exports.updateFoodItem = async (req, res) => {
     }
 };
 
-
-exports.getFoodById = async (req, res) => {
-    try {
-        const foodId = req.params.id;
-        console.log("foodId", foodId)
-
-        const food = await foodItem.aggregate([
-            { $match: { _id: mongoose.Types.ObjectId(foodId) } },
-            { $lookup: { from: "food-images", localField: "_id", foreignField: "foodItemId", as: "images" } }
-        ]);
-        console.log("food", food)
-        if (!food || food.length === 0) {
-            return res.status(404).json({ message: "Food item not found" });
-        }
-
-        res.status(200).json({ food: food[0] });
-    } catch (error) {
-        res.status(500).json({ message: "Failed to fetch food", error: error.message });
-    }
-};
-
-
 exports.deleteFoodItem = async (req, res) => {
     try {
         const foodId = req.params.id;
@@ -152,5 +130,41 @@ exports.deleteFoodItem = async (req, res) => {
         res.status(200).json({ message: "Food item deleted" });
     } catch (error) {
         res.status(500).json({ message: "Failed to delete food", error: error.message });
+    }
+};
+
+
+
+
+
+exports.getFoodById = async (req, res) => {
+    try {
+        const foodId = req.params.id;
+        const food = await foodItem.aggregate([
+            { $match: { _id: new mongoose.Types.ObjectId(foodId) } },
+            {
+                $lookup: {
+                    from: "food-images",
+                    localField: "_id",
+                    foreignField: "foodItemId",
+                    as: "images"
+                }
+            },
+            {
+                $lookup: {
+                    from: "restaurants",
+                    localField: "restaurantId",
+                    foreignField: "_id",
+                    as: "restaurant"
+                }
+            },
+            { $unwind: "$restaurant" }
+        ]);
+        if (!food || food.length === 0) {
+            return res.status(404).json({ message: "Food item not found" });
+        }
+        res.status(200).json({ food: food[0] });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch food", error: error.message });
     }
 };

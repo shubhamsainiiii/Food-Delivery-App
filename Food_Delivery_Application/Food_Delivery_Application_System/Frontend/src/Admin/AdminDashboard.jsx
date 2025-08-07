@@ -119,7 +119,7 @@ const AdminDashboard = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
 
     return (
-        <div className="min-h-screen flex bg-white">
+        <div className="min-h-screen flex bg-gradient-to-br from-[#fff4e5] to-[#f7fafc] mt-18">
             {/* Sidebar */}
             <Sidebar isOpen={isSidebarOpen} />
 

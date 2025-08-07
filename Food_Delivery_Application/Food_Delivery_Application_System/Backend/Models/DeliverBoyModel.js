@@ -5,7 +5,7 @@ const deliveryBoySchema = new mongoose.Schema({
     email: { type: String, trim: true, unique: true, required: true },
     phone: { type: String, trim: true, required: true },
     password: { type: String, trim: true, required: true },
-    profileImage: { type: String },
+    image: { type: String },
     address: { type: String, trim: true },
     vehicleNumber: { type: String, trim: true },
     aadharNumber: { type: String, trim: true },

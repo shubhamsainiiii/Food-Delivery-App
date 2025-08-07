@@ -19,4 +19,4 @@ export const removeCartItem = (id) =>
     axios.delete(`${API_URL}/removecart/${id}`, getAuthHeaders());
 
 export const clearCart = () =>
-    axios.delete(`${API_URL}/removecart`, getAuthHeaders());
+    axios.delete(`${API_URL}/`, getAuthHeaders());

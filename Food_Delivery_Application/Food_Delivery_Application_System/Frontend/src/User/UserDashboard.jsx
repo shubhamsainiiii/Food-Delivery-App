@@ -97,7 +97,7 @@ const UserDashboard = () => {
     return (
         <div className="flex min-h-screen mt-18 bg-gradient-to-br from-[#faebd7] to-[#f7fafc]">
             <UserSidebar user={user} />
-            <main className="flex-1 p-4 sm:p-8">
+            <main className="ml-64 p-4 sm:p-8 flex-1 overflow-y-auto">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-800">Welcome, {user?.name || 'User'}!</h1>
                     <p className="text-gray-600 mt-1">Here's a quick overview of your account.</p>

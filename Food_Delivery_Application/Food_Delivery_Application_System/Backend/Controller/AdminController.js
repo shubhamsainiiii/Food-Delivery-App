@@ -154,3 +154,35 @@ exports.getalluser = async (req, res) => {
     }
 }
 
+exports.getrestaurantbyId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const restaurantData = await restaurant.findById(id)
+        console.log("restaurantdataaaaaaaaa", restaurantData);
+        if (!restaurantData) {
+            return res.status(404).send({ message: "no restaurant found" });
+        }
+        return res.status(202).send({ message: "restaurant found", restaurantData });
+    }
+    catch (error) {
+        console.log("error", error);
+        return res.status(500).send({ success: false, message: "failed to fetch restaurant", error: error.message })
+    }
+}
+
+
+exports.getdeliveryboybyId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deliverybotData = await deliveryboy.findById(id);
+        console.log("deliveryboydataaaaaaaa", deliverybotData)
+        if (!deliverybotData) {
+            return res.status(404).send({ message: "no delivery boy found" });
+        }
+        return res.status(202).send({ message: "delivery boy found", deliverybotData })
+    }
+    catch (error) {
+        console.log("error", error);
+        return res.status(500).send({ success: false, message: "failed to fetch delivery boy", error: error.message })
+    }
+}

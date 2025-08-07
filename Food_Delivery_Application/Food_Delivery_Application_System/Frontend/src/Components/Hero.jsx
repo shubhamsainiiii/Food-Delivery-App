@@ -74,39 +74,32 @@ const Hero = ({ searchTerm, setSearchTerm }) => {
                             value={searchTerm}
                             onChange={handleChange}
                         />
-                        <button
-                            className="bg-gradient-to-r from-orange-500 to-orange-400 px-6 py-2 text-white font-medium"
-                            onClick={e => e.preventDefault()}
-                        >
-                            Search
-                        </button>
                     </div>
                 </div>
                 <div className="flex justify-center items-center">
                     <img src={scooter} alt="scooter" className="w-72 md:w-96 object-contain" />
                 </div>
             </div>
-
             {/* Category Slider */}
-            <div className="bg-gradient-to-br from-[#faebd7] to-[#f7fafc] py-10">
-                <div className="max-w-7xl mx-auto px-4">
+            <div className="bg-gradient-to-br from-[#faebd7] to-[#f7fafc] py-20">
+                <div className="max-w-7xl px-10">
                     <Swiper
                         loop={true}
                         spaceBetween={20}
-                        slidesPerView={5}
+                        slidesPerView={7}
                         breakpoints={{
-                            640: { slidesPerView: 5 },
-                            768: { slidesPerView: 6 },
-                            1024: { slidesPerView: 8 }
+                            640: { slidesPerView: 4 },
+                            768: { slidesPerView: 5 },
+                            1024: { slidesPerView: 6 }
                         }}
                     >
                         {categories.map((item, index) => (
                             <SwiperSlide key={index}>
                                 <div
-                                    className="flex flex-col items-center justify-center min-w-[80px] p-6 bg-white  rounded-lg hover:scale-105 transition-all duration-300 cursor-pointer"
+                                    className="flex flex-col items-center justify-center min-w-[80px] p-6 bg-white/70 rounded-3xl m-1 hover:scale-105 transition-all duration-300 cursor-pointer"
                                     onClick={() => setSearchTerm(item.name)}
                                 >
-                                    <img src={item.image} alt={item.name} className="h-14 w-25 object-contain mb-2 " />
+                                    <img src={item.image} alt={item.name} className="h-20 w-25 object-contain mb-2 " />
                                     <p className="text-black font-medium text-center text-sm">{item.name}</p>
                                 </div>
                             </SwiperSlide>

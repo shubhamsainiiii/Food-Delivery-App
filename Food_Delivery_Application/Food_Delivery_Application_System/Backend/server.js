@@ -4,7 +4,6 @@ require('dotenv').config();
 const cors = require('cors')
 const app = express();
 const fileupload = require("express-fileupload");
-
 const port = process.env.PORT || 9999;
 const mongoURL = process.env.MongoUrl;
 app.use(express.json())
@@ -26,11 +25,16 @@ const deliveryBoyRouter = require('./Routes/deliveryBoyRoute');
 app.use('/Delivery-Boy', deliveryBoyRouter)
 
 const addfooditem = require('./Routes/FoodRoute');
-const fileUpload = require('express-fileupload');
 app.use('/food-items', addfooditem);
 
 const addtoCart = require('./Routes/CartRoute');
 app.use('/Cart', addtoCart);
+
+const invoiceRoute = require('./Routes/InvoiceRoute');
+app.use('/Invoice', invoiceRoute)
+
+const orderRoute = require('./Routes/OrderRoute');
+app.use('/Order', orderRoute);
 
 mongoose.connect(mongoURL)
     .then(() => {

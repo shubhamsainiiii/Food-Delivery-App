@@ -77,7 +77,7 @@ const RestaurantDashboard = () => {
     }
 
     return (
-        <div className="min-h-screen flex bg-gradient-to-br from-[#39244a] via-[#522b53] to-[#5a6a91]">
+        <div className="min-h-screen flex bg-gradient-to-br from-[#39244a] via-[#522b53] to-[#5a6a91] mt-18">
             <RestaurantSidebar />
 
             <main className="flex-1 p-6 overflow-auto">

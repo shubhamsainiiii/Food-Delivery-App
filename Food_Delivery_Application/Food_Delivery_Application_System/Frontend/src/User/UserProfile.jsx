@@ -3,6 +3,7 @@ import { FaUser, FaEnvelope, FaPhone, FaLock, FaCamera } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import UserSidebar from "./UserSidebar";
 
 const BASE_URL = "http://localhost:8080";
 
@@ -15,11 +16,18 @@ const UserProfile = () => {
     const token = localStorage.getItem("userToken");
     const navigate = useNavigate();
 
+
+
     // Fetch user profile on mount
     useEffect(() => {
         fetchProfile();
     }, []);
 
+    if (!token) {
+        toast.error("Login expired. Please sign in again.");
+        navigate('/login');
+        return;
+    }
     const fetchProfile = async () => {
         try {
             const res = await axios.get(`${BASE_URL}/User/getuser`, {
@@ -110,8 +118,9 @@ const UserProfile = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col items-center py-10 px-4">
-            <div className="w-full max-w-2xl bg-white rounded-xl shadow-md p-8 space-y-8">
+        <div className="h-screen bg-gradient-to-br from-[#fff4e5] to-[#f7fafc] flex flex-col items-center py-10 px-4 mt-18">
+            <UserSidebar />
+            <div className="w-full max-w-2xl bg-gradient-to-br from-[#fff4e5] to-[#f7fafc] rounded-xl shadow-sm shadow-gray-400 p-8 space-y-8">
                 {/* Header / Avatar */}
                 <div className="flex items-center space-x-4 pb-6 border-b">
                     <div className="relative">
