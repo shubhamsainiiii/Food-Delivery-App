@@ -70,8 +70,9 @@ function AppContent() {
         <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
         <Route path="/admin/deliveryboy" element={<ProtectedRoute allowedRoles={['admin']}><HandleDeliveryBoy /></ProtectedRoute>} />
         <Route path="/admin/restaurants" element={<ProtectedRoute allowedRoles={['admin']}><HandleRestaurant /></ProtectedRoute>} />
-        <Route path="/admin/restaurantdetail" element={<ProtectedRoute allowedRoles={['admin']}><RestaurantDetails /> </ProtectedRoute>} />
-        <Route path="/admin/deliveryboydetail" element={<ProtectedRoute allowedRoles={['admin']}><DeliveryBoyDetails /> </ProtectedRoute>} />
+        <Route path="/admin/restaurantdetail/:id" element={<ProtectedRoute allowedRoles={['admin']}><RestaurantDetails /> </ProtectedRoute>} />
+        <Route path="/admin/deliveryboydetail/:id" element={<ProtectedRoute allowedRoles={['admin']}><DeliveryBoyDetails /> </ProtectedRoute>} />
+
 
         {/* Restaurant Routes */}
         <Route path="/restaurant/dashboard" element={<ProtectedRoute allowedRoles={['restaurant']}><RestaurantDashboard /></ProtectedRoute>} />

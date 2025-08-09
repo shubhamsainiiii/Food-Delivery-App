@@ -80,6 +80,7 @@ exports.getallrestaurant = async (req, res) => {
         res.status(500).send({ success: false, message: 'Failed to fetch restaurants', error: error.message });
     }
 };
+
 exports.getalldeliveryboy = async (req, res) => {
     try {
         const deliveryboys = await deliveryboy.find();

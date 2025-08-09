@@ -3,6 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaUser, FaCheckCircle, FaTimesCircle, FaClock } from 'react-icons/fa';
 import Sidebar from './Sidebar';
+import { useNavigate } from 'react-router-dom';
 
 const statusMap = {
     all: { label: "All", color: "text-gray-500", icon: <FaUser className="inline mb-1" /> },
@@ -14,6 +15,7 @@ const statusMap = {
 const HandleDeliveryBoy = () => {
     const [deliveryBoys, setDeliveryBoys] = useState([]);
     const [selectedDeliveryStatus, setSelectedDeliveryStatus] = useState('all');
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchDeliveryBoys();
@@ -21,21 +23,53 @@ const HandleDeliveryBoy = () => {
 
     const fetchDeliveryBoys = async () => {
         try {
-            const res = await axios.get("http://localhost:8080/Admin/getdeliveryboy");
+            const token = localStorage.getItem("userToken");
+            if (!token) {
+                navigate("/login");
+                return;
+            }
+
+            const res = await axios.get("http://localhost:8080/Admin/getdeliveryboy", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setDeliveryBoys(res.data.data || []);
         } catch (error) {
             console.log("error", error);
-            toast.error('Could not load delivery boys');
+            if (error.response?.status === 401) {
+                localStorage.removeItem("userToken");
+                navigate("/login");
+            } else {
+                toast.error('Could not load delivery boys');
+            }
         }
     };
 
     const handleDeliveryStatusChange = async (id, newStatus) => {
         try {
-            const res = await axios.patch(`http://localhost:8080/Admin/deliveryboyrequest/${id}/${newStatus}`);
+            const token = localStorage.getItem("userToken");
+            if (!token) {
+                navigate("/login");
+                return;
+            }
+
+            const res = await axios.patch(
+                `http://localhost:8080/Admin/deliveryboyrequest/${id}/${newStatus}`,
+                {},
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
             toast.success(res.data.message);
             fetchDeliveryBoys();
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Failed to update delivery boy status");
+            if (error.response?.status === 401) {
+                localStorage.removeItem("userToken");
+                navigate("/login");
+            } else {
+                toast.error(error?.response?.data?.message || "Failed to update delivery boy status");
+            }
         }
     };
 
@@ -120,14 +154,12 @@ const HandleDeliveryBoy = () => {
                                                 </button>
                                             </div>
                                         ) : (
-                                            <span className="text-gray-400 text-sm italic">No action</span>
+                                            <span className="text-gray-400 text-sm italic">—</span>
                                         )}
                                     </td>
-
-                                    {/* ✅ New "Details" column */}
                                     <td className="py-3 px-4">
                                         <button
-                                            onClick={() => window.location.href = `/admin/deliveryboydetail`}
+                                            onClick={() => navigate(`/admin/deliveryboydetail/${d._id}`)}
                                             className="px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-xs font-semibold cursor-pointer"
                                         >
                                             View Details
@@ -136,10 +168,8 @@ const HandleDeliveryBoy = () => {
                                 </tr>
                             ))}
                         </tbody>
-
                     </table>
                 </div>
-
             </div>
         </div>
     );
