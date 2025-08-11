@@ -6,7 +6,8 @@ const AdminSchema = new mongoose.Schema({
     phone: { type: String, required: true, trim: true },
     password: { type: String, required: true, trim: true, minlength: 6 },
     otp: { type: String },
-    otpexpire: { type: Date }
+    otpexpire: { type: Date },
+    image: { type: String }
 }, { timestamps: true })
 
 module.exports = mongoose.model('Admin', AdminSchema);

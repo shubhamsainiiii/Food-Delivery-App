@@ -39,6 +39,9 @@ import UserOrderHistory from './User/UserOrderHistory';
 import UserOrderDetail from './User/UserOrderDetail';
 import RestaurantDetails from './Admin/RestaurantDetails';
 import DeliveryBoyDetails from './Admin/DeliveryBoyDetails';
+import TotalUser from './Admin/TotalUser';
+import AdminProfile from './Admin/AdminProfile';
+import OrderDetail from './Restaurant/OrderDetail';
 
 function AppContent() {
   const location = useLocation();
@@ -72,6 +75,8 @@ function AppContent() {
         <Route path="/admin/restaurants" element={<ProtectedRoute allowedRoles={['admin']}><HandleRestaurant /></ProtectedRoute>} />
         <Route path="/admin/restaurantdetail/:id" element={<ProtectedRoute allowedRoles={['admin']}><RestaurantDetails /> </ProtectedRoute>} />
         <Route path="/admin/deliveryboydetail/:id" element={<ProtectedRoute allowedRoles={['admin']}><DeliveryBoyDetails /> </ProtectedRoute>} />
+        <Route path="/admin/totaluser" element={<ProtectedRoute allowedRoles={['admin']}><TotalUser /> </ProtectedRoute>} />
+        <Route path="/admin/updateprofile" element={<ProtectedRoute allowedRoles={['admin']}><AdminProfile /> </ProtectedRoute>} />
 
 
         {/* Restaurant Routes */}
@@ -80,7 +85,8 @@ function AppContent() {
         <Route path="/restaurant/orders" element={<ProtectedRoute allowedRoles={['restaurant']}><RecentOrders /></ProtectedRoute>} />
         <Route path="/restaurant/dishes" element={<ProtectedRoute allowedRoles={['restaurant']}><AllDishes /></ProtectedRoute>} />
         <Route path="/restaurant/editdish/:id" element={<ProtectedRoute allowedRoles={['restaurant']}><EditDishes /></ProtectedRoute>} />
-        <Route path="/rdup" element={<ProtectedRoute allowedRoles={['restaurant']}><Restaurantupdate /></ProtectedRoute>} />
+        <Route path="/update-restaurant/:id" element={<ProtectedRoute allowedRoles={['restaurant']}><Restaurantupdate /></ProtectedRoute>} />
+        <Route path="/restaurant/orderdetail/:invoiceId" element={<ProtectedRoute allowedRoles={['restaurant']}><OrderDetail /> </ProtectedRoute>} />
         <Route path="/add-food" element={<ProtectedRoute allowedRoles={['restaurant']}><AddFood /></ProtectedRoute>} />
 
         {/* Delivery Boy Routes */}

@@ -123,7 +123,7 @@ const HandleDeliveryBoy = () => {
                         <tbody>
                             {filteredDeliveryBoys.map((d, index) => (
                                 <tr key={d._id} className="border-b hover:bg-gray-50 transition-all duration-300">
-                                    <td className="py-3 px-4 font-semibold">0{index + 1}</td>
+                                    <td className="py-3 px-4 font-semibold">{index + 1}</td>
                                     <td className="py-3 px-4">{d.name}</td>
                                     <td className="py-3 px-4">{d.email}</td>
                                     <td className="py-3 px-4">{d.phone}</td>

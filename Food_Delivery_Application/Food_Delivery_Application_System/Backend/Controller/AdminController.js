@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const secretkey = process.env.SECRETKEY;
 const moment = require('moment');
+const { uploadImage } = require('../Helper/Helper')
 
 exports.adminSignUp = async (req, res) => {
     try {
@@ -187,3 +188,128 @@ exports.getdeliveryboybyId = async (req, res) => {
         return res.status(500).send({ success: false, message: "failed to fetch delivery boy", error: error.message })
     }
 }
+
+exports.getAdmin = async (req, res) => {
+    try {
+        const adminId = req.params.id;
+
+        // Find admin by ID
+        const adminData = await admin.findById(adminId);
+        if (!adminData) {
+            return res.status(404).send({ message: "Admin not found" });
+        }
+
+        return res.status(200).send({
+            message: "Admin fetched successfully",
+            data: adminData
+        });
+
+    } catch (error) {
+        console.error("Error fetching admin:", error);
+        return res.status(500).send({ message: error.message });
+    }
+};
+
+
+// exports.updateAdmin = async (req, res) => {
+//     try {
+//         const adminId = req.params.id;
+//         console.log("adminId", adminId)
+//         const updateData = { ...req.body };
+//         console.log("updateData", updateData)
+
+//         const updatedAdmin = await admin.findByIdAndUpdate(adminId, updateData, {
+//             new: true,
+//             runValidators: true,
+//         });
+
+//         if (!updatedAdmin) {
+//             return res.status(404).json({ message: 'Admin not found' });
+//         }
+//         console.log("updated admin", updatedAdmin)
+
+//         const updatedUser = await user.findOneAndUpdate(
+//             { adminId: adminId },
+//             {
+//                 name: updateData.name,
+//                 email: updateData.email,
+//                 phone: updateData.phone,
+//                 image: updateData.image,
+//             },
+//             { new: true, runValidators: true }
+//         );
+
+//         if (!updatedUser) {
+//             console.warn(`No linked user found for adminId: ${adminId}`);
+//         }
+
+//         return res.status(200).json({
+//             message: 'Admin and User profile updated successfully',
+//             admin: updatedAdmin,
+//             user: updatedUser || null,
+//         });
+//     } catch (error) {
+//         console.error('Error updating admin:', error);
+//         return res.status(500).json({ message: error.message });
+//     }
+// };
+
+
+exports.updateAdmin = async (req, res) => {
+    try {
+        const adminId = req.params.id;
+        console.log("adminId", adminId)
+        const updateData = { ...req.body };
+        console.log("updateData", updateData)
+        console.log("req.filessssss", req.files)
+        // If there's an image file to upload
+        if (req.files && req.files.images) {
+            // Upload images using your helper
+            const uploadResults = await uploadImage(req.files);
+            console.log("uploadResults", uploadResults)
+            if (uploadResults.length > 0) {
+                // Assuming first image URL, adjust if multiple images
+                updateData.image = uploadResults[0].secure_url;
+            }
+        }
+        console.log("imageeeeee", updateData.image)
+
+
+        // Update Admin document with new data (including image URL)
+        const updatedAdmin = await admin.findByIdAndUpdate(adminId, updateData, {
+            new: true,
+            runValidators: true,
+        });
+        console.log("updated admin", updatedAdmin)
+
+
+        if (!updatedAdmin) {
+            return res.status(404).json({ message: 'Admin not found' });
+        }
+
+        // Update linked User document
+        const updatedUser = await user.findOneAndUpdate(
+            { adminId: adminId },
+            {
+                name: updateData.name,
+                email: updateData.email,
+                phone: updateData.phone,
+                image: updateData.image,
+            },
+            { new: true, runValidators: true }
+        );
+        console.log("updated admin in user table ", updatedUser)
+        if (!updatedUser) {
+            console.warn(`No linked user found for adminId: ${adminId}`);
+        }
+
+        return res.status(200).json({
+            message: 'Admin and User profile updated successfully',
+            admin: updatedAdmin,
+            user: updatedUser || null,
+        });
+    } catch (error) {
+        console.error('Error updating admin:', error);
+        return res.status(500).json({ message: error.message });
+    }
+};

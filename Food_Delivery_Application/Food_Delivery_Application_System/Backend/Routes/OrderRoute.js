@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post('/createorder', auth, orderController.createOrder);
 router.get('/getallorder', auth, orderController.getallorders);
-router.get('/getorder/:id', auth, orderController.getOrderByInvoiceId);
+router.get('/getorderbyinvoice/:id', auth, orderController.getOrderByInvoiceId);
+router.get('/restaurantorders', auth, orderController.getOrdersForRestaurant)
 
 module.exports = router;

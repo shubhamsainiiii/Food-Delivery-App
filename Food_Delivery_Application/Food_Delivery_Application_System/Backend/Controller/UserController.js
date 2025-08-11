@@ -55,30 +55,6 @@ exports.loginuser = async (req, res) => {
     }
 }
 
-// exports.getuser = async (req, res) => {
-//     const curUser = req.user;
-//     try {
-//         if (!curUser) {
-//             return res.status(401).send({ message: "Unauthorized access" });
-//         }
-//         const userData = await user.findById(curUser._id).select("-password -otp -otpexpire");
-
-//         const stats = {
-//             orders: 0,
-//             addresses: 0,
-//         };
-
-//         const recentOrders = [];
-//         return res.status(200).send({ user: userData, stats, recentOrders });
-//     } catch (error) {
-//         return res.status(500).send({ message: error.message });
-//     }
-// };
-
-
-
-
-
 
 exports.getuser = async (req, res) => {
     const curUser = req.user;

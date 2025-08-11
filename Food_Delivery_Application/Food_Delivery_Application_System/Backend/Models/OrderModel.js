@@ -1,10 +1,11 @@
-const mongooose = require('mongoose');
+const mongoose = require('mongoose');
 
-const oredrSchema = new mongooose.Schema({
-    invoiceId: { type: mongooose.Schema.ObjectId, ref: 'Invoice' },
-    userId: { type: mongooose.Schema.ObjectId, ref: 'User' },
+const oredrSchema = new mongoose.Schema({
+    invoiceId: { type: mongoose.Schema.ObjectId, ref: 'Invoice' },
+    userId: { type: mongoose.Schema.ObjectId, ref: 'User' },
     quantity: { type: Number },
-    foodItemId: { type: mongooose.Schema.ObjectId, ref: 'food-items' },
+    foodItemId: { type: mongoose.Schema.ObjectId, ref: 'food-items' },
+    restaurantId: { type: mongoose.Schema.ObjectId, ref: 'Restaurant' },
     images: { type: [Object] },
     status: {
         type: String,
@@ -13,4 +14,4 @@ const oredrSchema = new mongooose.Schema({
     }
 }, { timestamps: true, versionKey: false })
 
-module.exports = mongooose.model('Order', oredrSchema);
+module.exports = mongoose.model('Order', oredrSchema);

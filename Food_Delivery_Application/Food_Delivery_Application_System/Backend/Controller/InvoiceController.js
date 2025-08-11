@@ -4,6 +4,7 @@ const invoice = require('../Models/InvoiceModel');
 exports.createInvoice = async (req, res) => {
     try {
         const { addressId, userId, total } = req.body;
+        console.log("req.body", req.body)
         if (!(addressId && userId && total)) {
             return res.status(404).send({ message: "error", error: error.message });
         }

@@ -6,6 +6,8 @@ const auth = require('../Middleware/Auth')
 
 router.post('/adminsignup', adminController.adminSignUp);
 router.post('/adminlogin', adminController.adminLogin);
+router.get('/getadmin/:id', auth, adminController.getAdmin);
+router.put('/update/:id', auth, adminController.updateAdmin);
 router.patch('/restaurantrequest/:id/:action', auth, adminController.handleRestaurantApproval);
 router.get('/getallrestaurant', auth, adminController.getallrestaurant);
 router.get('/getdeliveryboy', auth, adminController.getalldeliveryboy);
