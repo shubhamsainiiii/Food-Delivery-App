@@ -27,6 +27,10 @@ const restaurantOwnerModel = new mongoose.Schema({
     image: {
         type: [String]
     },
+    location: {
+        latitude: { type: Number },
+        longitude: { type: Number }
+    },
     ownerImage: { type: String }
 })
 module.exports = mongoose.model('Restaurant', restaurantOwnerModel);

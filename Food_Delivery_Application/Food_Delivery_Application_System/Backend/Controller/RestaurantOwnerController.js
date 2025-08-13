@@ -5,6 +5,105 @@ const bcrypt = require('bcrypt');
 const { uploadImage } = require('../Helper/Helper');
 const secretkey = process.env.SECRETKEY;
 
+// exports.signupRestaurant = async (req, res) => {
+//     try {
+//         const {
+//             restaurantName,
+//             name,
+//             email,
+//             phone,
+//             password,
+//             address,
+//             gstnumber,
+//             cuisineType,
+//             openingHours
+//         } = req.body;
+
+//         // Parse address if sent as JSON string
+//         let parsedAddress = address;
+//         if (typeof address === 'string') {
+//             try {
+//                 parsedAddress = JSON.parse(address);
+//             } catch {
+//                 return res.status(400).json({ message: 'Invalid address format' });
+//             }
+//         }
+
+//         // Parse opening hours if sent as JSON string
+//         let parsedOpeningHours = openingHours;
+//         if (typeof openingHours === 'string') {
+//             try {
+//                 parsedOpeningHours = JSON.parse(openingHours);
+//             } catch {
+//                 return res.status(400).json({ message: 'Invalid openingHours format' });
+//             }
+//         }
+
+//         if (!(restaurantName && name && email && phone && password)) {
+//             return res.status(404).send({ message: "All input required" });
+//         }
+
+//         const existing = await Restaurant.findOne({ email });
+//         if (existing) return res.status(400).json({ message: 'Email already registered' });
+
+//         // Hash password
+//         const salt = bcrypt.genSaltSync(12);
+//         const hashpass = bcrypt.hashSync(password, salt);
+
+//         // Check and upload restaurant images
+//         if (!req.files || !req.files.images) {
+//             return res.status(400).json({ message: "Restaurant images required" });
+//         }
+//         const restaurantImages = await uploadImage({ images: req.files.images });
+//         const restaurantImageUrls = restaurantImages.map(img => img.secure_url);
+
+//         // Upload owner image (optional but recommended)
+//         let ownerImageUrl = '';
+//         if (req.files.ownerImage) {
+//             const ownerImageUpload = await uploadImage({ images: req.files.ownerImage });
+//             ownerImageUrl = ownerImageUpload[0]?.secure_url || '';
+//         }
+
+//         // Create restaurant data
+//         const restaurantData = {
+//             restaurantName,
+//             name,
+//             email,
+//             phone,
+//             password: hashpass,
+//             address: parsedAddress,
+//             gstnumber,
+//             cuisineType,
+//             openingHours: parsedOpeningHours,
+//             status: 'pending',
+//             image: restaurantImageUrls,
+//             ownerImage: ownerImageUrl
+//         };
+
+//         const newRestaurant = new Restaurant(restaurantData);
+//         await newRestaurant.save();
+
+//         // Add to user table
+//         const userData = new user({
+//             name,
+//             email,
+//             phone,
+//             password: hashpass,
+//             image: ownerImageUrl || restaurantImageUrls[0], // Prefer owner image if uploaded
+//             role: 'restaurant',
+//             restaurantId: newRestaurant._id,
+//             status: 'pending'
+//         });
+//         await userData.save();
+
+//         res.status(201).json({ message: 'Signup successful', data: newRestaurant });
+//     } catch (error) {
+//         res.status(500).json({ message: 'Signup failed', error: error.message });
+//     }
+// };
+
+
+
 exports.signupRestaurant = async (req, res) => {
     try {
         const {
@@ -16,10 +115,12 @@ exports.signupRestaurant = async (req, res) => {
             address,
             gstnumber,
             cuisineType,
-            openingHours
+            openingHours,
+            latitude,
+            longitude
         } = req.body;
 
-        // Parse address if sent as JSON string
+        // Address parsing
         let parsedAddress = address;
         if (typeof address === 'string') {
             try {
@@ -29,7 +130,7 @@ exports.signupRestaurant = async (req, res) => {
             }
         }
 
-        // Parse opening hours if sent as JSON string
+        // Opening hours parsing
         let parsedOpeningHours = openingHours;
         if (typeof openingHours === 'string') {
             try {
@@ -50,21 +151,21 @@ exports.signupRestaurant = async (req, res) => {
         const salt = bcrypt.genSaltSync(12);
         const hashpass = bcrypt.hashSync(password, salt);
 
-        // Check and upload restaurant images
+        // Restaurant images
         if (!req.files || !req.files.images) {
             return res.status(400).json({ message: "Restaurant images required" });
         }
         const restaurantImages = await uploadImage({ images: req.files.images });
         const restaurantImageUrls = restaurantImages.map(img => img.secure_url);
 
-        // Upload owner image (optional but recommended)
+        // Owner image (optional)
         let ownerImageUrl = '';
         if (req.files.ownerImage) {
             const ownerImageUpload = await uploadImage({ images: req.files.ownerImage });
             ownerImageUrl = ownerImageUpload[0]?.secure_url || '';
         }
 
-        // Create restaurant data
+        // Restaurant data with location
         const restaurantData = {
             restaurantName,
             name,
@@ -72,6 +173,10 @@ exports.signupRestaurant = async (req, res) => {
             phone,
             password: hashpass,
             address: parsedAddress,
+            location: {
+                latitude: latitude || null,
+                longitude: longitude || null
+            },
             gstnumber,
             cuisineType,
             openingHours: parsedOpeningHours,
@@ -89,7 +194,7 @@ exports.signupRestaurant = async (req, res) => {
             email,
             phone,
             password: hashpass,
-            image: ownerImageUrl || restaurantImageUrls[0], // Prefer owner image if uploaded
+            image: ownerImageUrl || restaurantImageUrls[0],
             role: 'restaurant',
             restaurantId: newRestaurant._id,
             status: 'pending'
@@ -102,44 +207,7 @@ exports.signupRestaurant = async (req, res) => {
     }
 };
 
-// exports.updateRestaurant = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const updates = req.body;
 
-//         const updatedRestaurant = await Restaurant.findByIdAndUpdate(
-//             id,
-//             { $set: updates },
-//             { new: true }
-//         );
-
-//         if (!updatedRestaurant) {
-//             return res.status(404).json({ message: 'Restaurant not found' });
-//         }
-
-//         const updatedUser = await user.findOneAndUpdate(
-//             { restaurantId: id },
-//             {
-//                 $set: {
-//                     name: updates.name,
-//                     email: updates.email,
-//                     phone: updates.phone,
-//                     image: updates.ownerImage,
-//                 }
-//             },
-//             { new: true }
-//         );
-
-//         res.status(200).json({
-//             message: 'Profile updated successfully',
-//             restaurant: updatedRestaurant,
-//             user: updatedUser
-//         });
-//     } catch (error) {
-//         console.error('Update error:', error);
-//         res.status(500).json({ message: 'Update failed', error: error.message });
-//     }
-// };
 
 
 exports.updateRestaurant = async (req, res) => {

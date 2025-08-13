@@ -166,3 +166,39 @@ exports.updateDeliveryBoy = async (req, res) => {
         });
     }
 };
+
+exports.getdeliverboy = async (req, res) => {
+    try {
+        const userId = req.user.id; // from auth middleware (decoded JWT)
+        console.log("userIddddddd", userId)
+        const userData = await user.findById(userId);
+        console.log("userDataaaaaaaaaa", userData)
+        if (!userData || userData.role !== 'delivery-boy') {
+            return res.status(404).json({ message: "User not found or not a delivery boy" });
+        }
+        const deliveryBoyId = userData.deliveryBoyId;
+        console.log("userIddddddd.delibveryboyIddddddd", userData.deliveryBoyId)
+        if (!deliveryBoyId) {
+            return res.status(404).json({ message: "Linked delivery boy not found in user record" });
+        }
+
+        const deliveryBoyData = await deliveryBoy.findById(deliveryBoyId);
+        console.log("deliveryboyDatataaaaaaaaaaaaa", deliveryBoyData)
+        if (!deliveryBoyData) {
+            return res.status(404).json({ message: "Delivery boy document not found" });
+        }
+
+        return res.status(200).json({
+            message: "Delivery boy details fetched successfully",
+            deliveryBoy: deliveryBoyData,
+            user: userData
+        });
+
+    } catch (error) {
+        console.error("Get Delivery Boy Error:", error);
+        return res.status(500).json({
+            message: "Failed to fetch delivery boy details",
+            error: error.message
+        });
+    }
+};

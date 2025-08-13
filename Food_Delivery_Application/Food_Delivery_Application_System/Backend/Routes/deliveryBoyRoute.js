@@ -6,5 +6,6 @@ const auth = require('../Middleware/Auth')
 router.post('/deliveryboysignup', deliveryboyController.SignupDeliveryBoy);
 router.post('/deliveryboylogin', deliveryboyController.loginDeliveryBoy);
 router.put('/updatedeliveryboy', auth, deliveryboyController.updateDeliveryBoy);
+router.get('/getdeliveryboy', auth, deliveryboyController.getdeliverboy);
 
 module.exports = router;
