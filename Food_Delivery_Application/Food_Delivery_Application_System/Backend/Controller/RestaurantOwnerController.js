@@ -5,104 +5,6 @@ const bcrypt = require('bcrypt');
 const { uploadImage } = require('../Helper/Helper');
 const secretkey = process.env.SECRETKEY;
 
-// exports.signupRestaurant = async (req, res) => {
-//     try {
-//         const {
-//             restaurantName,
-//             name,
-//             email,
-//             phone,
-//             password,
-//             address,
-//             gstnumber,
-//             cuisineType,
-//             openingHours
-//         } = req.body;
-
-//         // Parse address if sent as JSON string
-//         let parsedAddress = address;
-//         if (typeof address === 'string') {
-//             try {
-//                 parsedAddress = JSON.parse(address);
-//             } catch {
-//                 return res.status(400).json({ message: 'Invalid address format' });
-//             }
-//         }
-
-//         // Parse opening hours if sent as JSON string
-//         let parsedOpeningHours = openingHours;
-//         if (typeof openingHours === 'string') {
-//             try {
-//                 parsedOpeningHours = JSON.parse(openingHours);
-//             } catch {
-//                 return res.status(400).json({ message: 'Invalid openingHours format' });
-//             }
-//         }
-
-//         if (!(restaurantName && name && email && phone && password)) {
-//             return res.status(404).send({ message: "All input required" });
-//         }
-
-//         const existing = await Restaurant.findOne({ email });
-//         if (existing) return res.status(400).json({ message: 'Email already registered' });
-
-//         // Hash password
-//         const salt = bcrypt.genSaltSync(12);
-//         const hashpass = bcrypt.hashSync(password, salt);
-
-//         // Check and upload restaurant images
-//         if (!req.files || !req.files.images) {
-//             return res.status(400).json({ message: "Restaurant images required" });
-//         }
-//         const restaurantImages = await uploadImage({ images: req.files.images });
-//         const restaurantImageUrls = restaurantImages.map(img => img.secure_url);
-
-//         // Upload owner image (optional but recommended)
-//         let ownerImageUrl = '';
-//         if (req.files.ownerImage) {
-//             const ownerImageUpload = await uploadImage({ images: req.files.ownerImage });
-//             ownerImageUrl = ownerImageUpload[0]?.secure_url || '';
-//         }
-
-//         // Create restaurant data
-//         const restaurantData = {
-//             restaurantName,
-//             name,
-//             email,
-//             phone,
-//             password: hashpass,
-//             address: parsedAddress,
-//             gstnumber,
-//             cuisineType,
-//             openingHours: parsedOpeningHours,
-//             status: 'pending',
-//             image: restaurantImageUrls,
-//             ownerImage: ownerImageUrl
-//         };
-
-//         const newRestaurant = new Restaurant(restaurantData);
-//         await newRestaurant.save();
-
-//         // Add to user table
-//         const userData = new user({
-//             name,
-//             email,
-//             phone,
-//             password: hashpass,
-//             image: ownerImageUrl || restaurantImageUrls[0], // Prefer owner image if uploaded
-//             role: 'restaurant',
-//             restaurantId: newRestaurant._id,
-//             status: 'pending'
-//         });
-//         await userData.save();
-
-//         res.status(201).json({ message: 'Signup successful', data: newRestaurant });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Signup failed', error: error.message });
-//     }
-// };
-
-
 
 exports.signupRestaurant = async (req, res) => {
     try {
@@ -213,22 +115,17 @@ exports.signupRestaurant = async (req, res) => {
 exports.updateRestaurant = async (req, res) => {
     try {
         const { id } = req.params;
-        // form data as JSON string in req.body.data
+        console.log("iddddddddd", id)
         const updates = JSON.parse(req.body.data);
 
-        // Agar images hai to upload karo
         if (req.files && req.files.ownerImage) {
-            // req.files.ownerImage ho sakta hai array ya single file dono ho
             let uploadResults;
             if (Array.isArray(req.files.ownerImage)) {
-                // Agar multiple images ho to helper me array bana ke bhejo
                 uploadResults = await uploadImage({ images: req.files.ownerImage });
             } else {
                 uploadResults = await uploadImage({ images: [req.files.ownerImage] });
             }
 
-            // uploadResults me Cloudinary ka response array milega
-            // tum sirf pehla URL store kar sakte ho
             if (uploadResults.length > 0) {
                 updates.ownerImage = uploadResults[0].secure_url;
             }
@@ -288,7 +185,6 @@ exports.loginrestaurant = async (req, res) => {
         if (existingMail.status === 'rejected') {
             return res.status(404).json({ message: 'Your signup was rejected by admin.' });
         }
-        // (optional) you can check status !== 'approved' if more states come in future
         const match = await bcrypt.compare(password, existingMail.password);
         if (!match) {
             return res.status(404).send({ message: 'Invalid email or password' });

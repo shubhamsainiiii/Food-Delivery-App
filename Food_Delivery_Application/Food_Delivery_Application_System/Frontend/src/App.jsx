@@ -42,6 +42,9 @@ import DeliveryBoyDetails from './Admin/DeliveryBoyDetails';
 import TotalUser from './Admin/TotalUser';
 import AdminProfile from './Admin/AdminProfile';
 import OrderDetail from './Restaurant/OrderDetail';
+import DeliveryBoyOrders from './DeliveryBoy/DeliveryBoyOrders';
+import DeliveryBoyUpdateProfile from './DeliveryBoy/DeliveryBoyUpdateProfile';
+import DeliveryBoyPerformance from './DeliveryBoy/DeliveryBoyPerformance';
 
 function AppContent() {
   const location = useLocation();
@@ -90,7 +93,10 @@ function AppContent() {
         <Route path="/add-food" element={<ProtectedRoute allowedRoles={['restaurant']}><AddFood /></ProtectedRoute>} />
 
         {/* Delivery Boy Routes */}
-        <Route path="/deliveryboy/dashboard" element={<ProtectedRoute allowedRoles={['delivery-boy']}><DeliveryBoyDashboard /></ProtectedRoute>} />
+        <Route path="/delivery-boy/dashboard" element={<ProtectedRoute allowedRoles={['delivery-boy']}><DeliveryBoyDashboard /></ProtectedRoute>} />
+        <Route path="/delivery-boy/orders" element={<ProtectedRoute allowedRoles={['delivery-boy']}><DeliveryBoyOrders /> </ProtectedRoute>} />
+        <Route path="/delivery-boy/update-profile" element={<ProtectedRoute allowedRoles={['delivery-boy']}><DeliveryBoyUpdateProfile /> </ProtectedRoute>} />
+        <Route path="/delivery-boy/performance" element={<ProtectedRoute allowedRoles={['delivery-boy']}><DeliveryBoyPerformance /> </ProtectedRoute>} />
 
         {/* User Routes */}
         <Route path="/user/dashboard" element={<ProtectedRoute allowedRoles={['user']}><UserDashboard /></ProtectedRoute>} />
@@ -100,7 +106,7 @@ function AppContent() {
         <Route path="/user/orders" element={<ProtectedRoute allowedRoles={['user']}><UserOrder /></ProtectedRoute>} />
         <Route path="/user/checkout" element={<ProtectedRoute allowedRoles={['user']}><UserCheckout /> </ProtectedRoute>} />
         <Route path="/user/orderhistory" element={<ProtectedRoute allowedRoles={['user']}><UserOrderHistory /> </ProtectedRoute>} />
-        <Route path="/user/orderdetails/:invoiceId" element={<ProtectedRoute allowedRoles={['user']}><UserOrderDetail /> </ProtectedRoute>} />
+        <Route path="/user/orderdetails/:id" element={<ProtectedRoute allowedRoles={['user']}><UserOrderDetail /> </ProtectedRoute>} />
       </Routes>
     </>
   );

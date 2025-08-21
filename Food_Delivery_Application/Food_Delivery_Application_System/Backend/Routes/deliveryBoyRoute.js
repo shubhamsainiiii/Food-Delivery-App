@@ -5,6 +5,7 @@ const auth = require('../Middleware/Auth')
 
 router.post('/deliveryboysignup', deliveryboyController.SignupDeliveryBoy);
 router.post('/deliveryboylogin', deliveryboyController.loginDeliveryBoy);
+router.post('/deliveryboylogout', deliveryboyController.logoutDeliveryBoy);
 router.put('/updatedeliveryboy', auth, deliveryboyController.updateDeliveryBoy);
 router.get('/getdeliveryboy', auth, deliveryboyController.getdeliverboy);
 

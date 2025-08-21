@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FaUserCircle, FaBox, FaChartLine, FaSignOutAlt } from 'react-icons/fa';
+import { FaUserCircle, FaBox, FaChartLine, FaSignOutAlt, FaHome } from 'react-icons/fa';
 import axios from 'axios';
 
 const BASE_URL = "http://localhost:8080";
@@ -28,13 +28,14 @@ const DeliveryBoySidebar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('deliveryBoyToken');
-        navigate('/deliveryboy/login');
+        navigate('/login');
     };
 
     const navLinks = [
-        { path: '/deliveryboy/update-profile', label: 'Update Profile', icon: FaUserCircle },
-        { path: '/deliveryboy/orders', label: 'My Orders', icon: FaBox },
-        { path: '/deliveryboy/performance', label: 'Performance', icon: FaChartLine },
+        { path: '/delivery-boy/dashboard', label: 'Dashboard  ', icon: FaHome },
+        { path: '/delivery-boy/update-profile', label: 'Update Profile', icon: FaUserCircle },
+        { path: '/delivery-boy/orders', label: 'My Orders', icon: FaBox },
+        { path: '/delivery-boy/performance', label: 'Performance', icon: FaChartLine },
     ];
 
     return (

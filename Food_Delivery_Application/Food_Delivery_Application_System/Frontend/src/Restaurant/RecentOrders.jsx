@@ -12,13 +12,14 @@ const RecentOrders = () => {
         const fetchOrders = async () => {
             try {
                 const token = localStorage.getItem('userToken');
+                console.log("tokennnnnnnnnn", token)
                 const res = await axios.get(
                     'http://localhost:8080/Order/restaurantorders',
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
 
                 const orders = res.data.orders || [];
-
+                console.log("ordersssssssss", orders)
                 // Group orders by invoiceId
                 const grouped = orders.reduce((acc, order) => {
                     const invoiceId = order.invoiceId?._id;
@@ -32,6 +33,7 @@ const RecentOrders = () => {
                     }
                     return acc;
                 }, {});
+                console.log("groupeddddddd", grouped)
 
                 setGroupedOrders(Object.values(grouped));
             } catch (err) {

@@ -96,7 +96,7 @@ const UserAddress = () => {
                                 <div className="flex items-start gap-3 text-sm text-gray-700 mb-1">
                                     <FaMapMarkerAlt className="text-gray-500 mt-1" />
                                     <p>
-                                        {addr.street}, {addr.landmark && `${addr.landmark}, `}
+                                        {addr.landmark}, {addr.street},
                                         {addr.city}, {addr.state} - {addr.zip}
                                     </p>
                                 </div>

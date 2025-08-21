@@ -9,7 +9,7 @@ const oredrSchema = new mongoose.Schema({
     images: { type: [Object] },
     status: {
         type: String,
-        enum: ['pending', 'completed', 'on the way', 'rejected'],
+        enum: ['pending', 'completed', 'on the way', 'rejected', 'accepted'],
         default: 'pending'
     }
 }, { timestamps: true, versionKey: false })

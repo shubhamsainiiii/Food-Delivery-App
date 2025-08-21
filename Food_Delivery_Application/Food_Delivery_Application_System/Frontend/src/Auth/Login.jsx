@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+// /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -8,13 +8,41 @@ import bgImage from '../assets/bg3.jpg';
 
 const Login = () => {
     const [form, setForm] = useState({ email: '', password: '' });
-    const [st, setSt] = useState("");
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
+    };
+
+    const getLocation = () =>
+        new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+                return reject(new Error('Geolocation not supported'));
+            }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    resolve({
+                        latitude: pos.coords.latitude,
+                        longitude: pos.coords.longitude,
+                    });
+                },
+                (err) => reject(err),
+                { enableHighAccuracy: true }
+            );
+        });
+
+    // 🔹 Update location in DB
+    const updateLocation = async (userId, latitude, longitude) => {
+        try {
+            await axios.put(`http://localhost:8080/DeliveryBoy/update-location/${userId}`, {
+                latitude,
+                longitude,
+            });
+        } catch (err) {
+            console.error("Failed to update location", err);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -26,51 +54,53 @@ const Login = () => {
 
         setLoading(true);
         try {
-            const res = await axios.post('http://localhost:8080/User/userlogin', {
-                email: form.email,
-                password: form.password
-            });
-            const { user } = res.data;
-            setSt(user.status);
+            const res = await axios.post('http://localhost:8080/User/userlogin', form);
+            const { user, role, token } = res.data;
 
             if (res.status === 200 || res.status === 202) {
-                if (res.data.role === "admin" || res.data.role === "user") {
-                    toast.success('Login successful!');
-                }
-                if (res.data.role === "restaurant" || res.data.role === "delivery-boy") {
+                // Save session
+                localStorage.setItem('userToken', token || '');
+                localStorage.setItem('userRole', role || '');
+                localStorage.setItem("user", JSON.stringify(user));
+                localStorage.setItem("restaurantId", user.restaurantId);
+
+
+                if (role === "delivery-boy") {
                     if (user.status === "pending") {
                         toast.error('Your request is in pending state');
+                        return;
                     } else if (user.status === "rejected") {
                         toast.error('Your request is rejected');
+                        return;
                     } else {
                         toast.success('Login successful!');
+
+                        // Get location and update in DB
+                        try {
+                            const { latitude, longitude } = await getLocation();
+                            await updateLocation(user._id, latitude, longitude);
+                        } catch (locErr) {
+                            console.error("Location fetch failed", locErr);
+                        }
+                        navigate("/delivery-boy/dashboard");
                     }
-                }
-
-                localStorage.setItem('userToken', res.data.token || '');
-                localStorage.setItem('userRole', res.data.role || '');
-                localStorage.setItem("user", JSON.stringify(res.data.user));
-
-                if (res.data.role === "user") {
+                } else if (role === "user") {
+                    toast.success('Login successful!');
                     navigate("/user/dashboard");
-                } else if (res.data.role === "admin") {
+                } else if (role === "admin") {
+                    toast.success('Login successful!');
                     navigate("/admin/dashboard");
-                } else if (res.data.role === "restaurant") {
+                } else if (role === "restaurant") {
                     if (user.status === "pending" || user.status === "rejected") {
                         navigate("/login");
                     } else {
+                        toast.success('Login successful!');
                         navigate("/restaurant/dashboard");
-                    }
-                } else if (res.data.role === "delivery-boy") {
-                    if (user.status === "pending" || user.status === "rejected") {
-                        navigate("/login");
-                    } else {
-                        navigate("/deliveryboy/dashboard");
                     }
                 }
             }
         } catch (error) {
-            if (error.response && error.response.data && error.response.data.message) {
+            if (error.response?.data?.message) {
                 toast.error(error.response.data.message);
             } else {
                 toast.error('Login failed or network error!');
@@ -87,8 +117,6 @@ const Login = () => {
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-xs scale-102"
                 style={{ backgroundImage: `url(${bgImage})` }}
             ></div>
-
-            {/* Optional dark overlay */}
             <div className="absolute inset-0 bg-black/25"></div>
 
             {/* Login Card */}
@@ -161,6 +189,16 @@ const Login = () => {
                         Create Account
                     </a>
                 </div>
+
+                {/* Logout Button (for demo, you can move this to dashboard) */}
+                {/* <div className="mt-4">
+                    <button
+                        onClick={handleLogout}
+                        className="w-full py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                    >
+                        Logout
+                    </button>
+                </div> */}
             </div>
         </div>
     );

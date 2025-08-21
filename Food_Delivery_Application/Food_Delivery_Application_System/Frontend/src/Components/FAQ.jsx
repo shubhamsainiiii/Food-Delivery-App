@@ -37,7 +37,7 @@ const FAQ = () => {
                     </div>
 
                     {/* Right Accordion */}
-                    <div className="flex-1 w-full">
+                    <div className="flex-1 w-full mr-5">
                         {faqs.map((faq, index) => {
                             const isOpen = openIndex === index;
 

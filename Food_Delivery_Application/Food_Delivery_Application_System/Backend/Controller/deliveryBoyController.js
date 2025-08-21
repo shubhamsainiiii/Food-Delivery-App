@@ -5,99 +5,192 @@ const jwt = require('jsonwebtoken');
 const { uploadImage } = require('../Helper/Helper')
 const secretkey = process.env.SECRETKEY;
 
+
 exports.SignupDeliveryBoy = async (req, res) => {
     try {
-        const { name, email, phone, password } = req.body;
-        if (!(name && email && phone && password)) {
-            return res.status(404).send({ message: "all input required" });
+        const { name, email, phone, password, latitude, longitude } = req.body;
+
+        if (!(name && email && phone && password && latitude && longitude)) {
+            return res.status(400).send({ message: "All input required including latitude & longitude" });
         }
+
         const existingMail = await deliveryBoy.findOne({ email });
         if (existingMail) {
-            return res.status(404).send({ message: "Admin Already Exist" });
+            return res.status(409).send({ message: "Delivery Boy already exists" });
         }
+
         const salt = bcrypt.genSaltSync(12);
         const hashpass = bcrypt.hashSync(password, salt);
-        const data = { name, email, phone, password: hashpass };
-        const deliveryBoyData = new deliveryBoy(data);
+
+        const deliveryBoyData = new deliveryBoy({
+            name,
+            email,
+            phone,
+            password: hashpass,
+            location: {
+                type: "Point",
+                coordinates: [longitude, latitude]
+            }
+        });
+
         await deliveryBoyData.save();
-        console.log("delivery Boy data :", deliveryBoyData);
-        const newuser = { name, email, phone, password: hashpass, status: 'pending', role: 'delivery-boy', deliveryBoyId: deliveryBoyData._id };
-        const userData = new user(newuser);
-        await userData.save()
-        console.log('delivery Boy data in user table : ', userData)
-        return res.status(202).send({ message: "Delivery Boy Signup Successfully", deliveryBoyData })
-    }
-    catch (error) {
+
+        // Also save to user table
+        const userData = new user({
+            name,
+            email,
+            phone,
+            password: hashpass,
+            status: 'pending',
+            role: 'delivery-boy',
+            deliveryBoyId: deliveryBoyData._id
+        });
+
+        await userData.save();
+
+        return res.status(201).send({
+            message: "Delivery Boy Signup Successfully",
+            deliveryBoyData
+        });
+
+    } catch (error) {
         return res.status(500).send({ message: error.message });
     }
-}
+};
 
+
+// deliveryBoyController.js
+
+const updateDeliveryBoyLocation = async (email, latitude, longitude) => {
+    const existing = await deliveryBoy.findOne({ email });
+    if (!existing) return null;
+
+    existing.location.coordinates = [longitude, latitude];
+    await existing.save();
+    return existing;
+};
+
+// Login
 exports.loginDeliveryBoy = async (req, res) => {
     try {
-        const { email, password } = req.body;
-        if (!(email && password)) {
-            return res.status(404).send({ message: "All input required" });
+        const { email, password, latitude, longitude } = req.body;
+        if (!(email && password && latitude && longitude)) {
+            return res.status(400).send({ message: "All input required including latitude & longitude" });
         }
+
         const existing = await deliveryBoy.findOne({ email });
         if (!existing) {
             return res.status(404).send({ message: "No delivery boy found with this email" });
         }
+
         const match = await bcrypt.compare(password, existing.password);
         if (!match) {
-            return res.status(404).send({ message: "Invalid email or password" });
+            return res.status(401).send({ message: "Invalid email or password" });
         }
+
+        // ✅ update location using helper
+        await updateDeliveryBoyLocation(email, latitude, longitude);
+
         const token = jwt.sign({ email: existing.email }, secretkey, { expiresIn: '24h' });
-        return res.status(202).send({
-            message: "Delivery Boy Login Successful", role: existing.role, token
+
+        return res.status(200).send({
+            message: "Delivery Boy Login Successful",
+            role: 'delivery-boy',
+            token
         });
+
     } catch (error) {
         return res.status(500).send({ message: error.message });
     }
-}
+};
+
+// Logout
+exports.logoutDeliveryBoy = async (req, res) => {
+    try {
+        const { email, latitude, longitude } = req.body;
+        if (!(email && latitude && longitude)) {
+            return res.status(400).send({ message: "Email and location required" });
+        }
+
+        const updated = await updateDeliveryBoyLocation(email, latitude, longitude);
+        if (!updated) {
+            return res.status(404).send({ message: "No delivery boy found with this email" });
+        }
+
+        return res.status(200).send({ message: "Logout successful & location updated" });
+
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+};
 
 
 
 
-// exports.updateDeliveryBoy = async (req, res) => {
+
+
+
+
+
+
+
+// Login
+// exports.loginDeliveryBoy = async (req, res) => {
 //     try {
-//         const deliveryBoyId = req.user._id; // assuming login token gives this
-//         console.log("iddddddddd", deliveryBoyId)
-//         const { name, phone, address, vehicleNumber, aadharNumber } = req.body;
+//         const { email, password, latitude, longitude } = req.body;
 
-//         // Find delivery boy first
-//         const deliveryBoyData = await deliveryBoy.findById(deliveryBoyId);
-//         if (!deliveryBoyData) {
-//             return res.status(404).send({ message: "Delivery boy not found" });
-//         }
-//         console.log("deliveryboyyyyyy", deliveryBoyData)
-//         // Handle image upload if present
-//         if (req.files && req.files.profileImage) {
-//             const uploadedImages = await uploadImage({ images: req.files.profileImage });
-//             if (uploadedImages.length > 0) {
-//                 deliveryBoyData.profileImage = uploadedImages[0].secure_url;
-//             }
+//         if (!(email && password && latitude && longitude)) {
+//             return res.status(400).send({ message: "All input required including latitude & longitude" });
 //         }
 
-//         // Update fields
-//         if (name) deliveryBoyData.name = name;
-//         if (phone) deliveryBoyData.phone = phone;
-//         if (address) deliveryBoyData.address = address;
-//         if (vehicleNumber) deliveryBoyData.vehicleNumber = vehicleNumber;
-//         if (aadharNumber) deliveryBoyData.aadharNumber = aadharNumber;
+//         const existing = await deliveryBoy.findOne({ email });
+//         if (!existing) {
+//             return res.status(404).send({ message: "No delivery boy found with this email" });
+//         }
 
-//         // Save updated document
-//         await deliveryBoyData.save();
+//         const match = await bcrypt.compare(password, existing.password);
+//         if (!match) {
+//             return res.status(401).send({ message: "Invalid email or password" });
+//         }
+
+//         // Update location on login
+//         existing.location.coordinates = [longitude, latitude];
+//         await existing.save();
+
+//         const token = jwt.sign({ email: existing.email }, secretkey, { expiresIn: '24h' });
 
 //         return res.status(200).send({
-//             message: "Delivery boy updated successfully",
-//             deliveryBoy: deliveryBoyData
+//             message: "Delivery Boy Login Successful",
+//             role: 'delivery-boy',
+//             token
 //         });
+
 //     } catch (error) {
-//         console.error("Update Error:", error);
-//         return res.status(500).send({
-//             message: "Failed to update delivery boy",
-//             error: error.message
-//         });
+//         return res.status(500).send({ message: error.message });
+//     }
+// };
+
+// // Logout (updates location)
+// exports.logoutDeliveryBoy = async (req, res) => {
+//     try {
+//         const { email, latitude, longitude } = req.body;
+
+//         if (!(email && latitude && longitude)) {
+//             return res.status(400).send({ message: "Email and location required" });
+//         }
+
+//         const existing = await deliveryBoy.findOne({ email });
+//         if (!existing) {
+//             return res.status(404).send({ message: "No delivery boy found with this email" });
+//         }
+
+//         existing.location.coordinates = [longitude, latitude];
+//         await existing.save();
+
+//         return res.status(200).send({ message: "Logout successful & location updated" });
+
+//     } catch (error) {
+//         return res.status(500).send({ message: error.message });
 //     }
 // };
 

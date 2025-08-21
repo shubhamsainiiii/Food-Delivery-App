@@ -4,57 +4,6 @@ const moment = require('moment');
 const Food = require('../Models/FoodModel');
 const FoodImage = require("../Models/FoodImageModel");
 
-// exports.createOrder = async (req, res) => {
-//     try {
-//         const user = req.user;
-//         const { items, addressId, totalamount, restaurantId } = req.body;
-
-//         if (!(items && Array.isArray(items) && items.length > 0 && addressId && totalamount)) {
-//             return res.status(400).send({ message: "All fields are required" });
-//         }
-
-//         const invoiceData = new Invoice({
-//             userId: user._id,
-//             addressId,
-//             total: totalamount,
-//             restaurantId: restaurantId,
-//             date: moment().format(),
-//             status: 'pending'
-//         });
-
-//         const newInvoice = await invoiceData.save();
-//         console.log("Invoice created:", newInvoice);
-
-//         const orderPromises = items.map(item => {
-//             const orderData = new Order({
-//                 invoiceId: newInvoice._id,
-//                 userId: user._id,
-//                 quantity: item.quantity,
-//                 restaurantId: item.restaurantId,
-//                 status: 'pending',
-//                 foodItemId: item.foodItemId || item._id,
-//                 images: item.images || []
-//             });
-//             return orderData.save();
-//         });
-
-//         const allOrders = await Promise.all(orderPromises);
-//         console.log("Orders saved:", allOrders);
-
-//         return res.status(201).send({
-//             message: "Order placed successfully",
-//             invoice: newInvoice,
-//             orders: allOrders
-//         });
-//     } catch (error) {
-//         console.error("Order error:", error);
-//         return res.status(500).send({ message: "Error placing order", error: error.message });
-//     }
-// };
-
-
-
-
 exports.createOrder = async (req, res) => {
     try {
         const user = req.user;
@@ -144,94 +93,30 @@ exports.getallorders = async (req, res) => {
 };
 
 
-// exports.getOrderByInvoiceId = async (req, res) => {
-//     try {
-//         const invoiceId = req.params.id;
-//         console.log("invoiceidddd", invoiceId)
-
-//         // 1. Invoice + user + address fetch karo
-//         const invoice = await Invoice.findOne({ _id: invoiceId })
-//             .populate("addressId")
-//             .populate("userId", "name email phone createdAt");
-//         console.log("invoiceeeee", invoice)
-
-//         if (!invoice) {
-//             return res.status(404).send({ message: "Invoice not found" });
-//         }
-
-//         // 2. Orders fetch karo + foodItemId + images populate
-//         const orders = await Order.find({ invoiceId })
-//             .populate({
-//                 path: "foodItemId",
-//                 model: "food-items",
-//                 populate: {
-//                     path: "images", // Ye kaam karega agar tum food-items schema me `images` field ref: food-images banate ho
-//                     model: "food-images"
-//                 }
-//             });
-//         console.log("ordersssssss", orders)
-
-//         // 3. Agar images food-items schema me field nahi hai to manual query
-//         const items = await Promise.all(
-//             orders.map(async order => {
-//                 let images = [];
-
-//                 // Agar foodItemId null nahi hai to images fetch karo
-//                 if (order.foodItemId?._id) {
-//                     images = await FoodImage.find({ foodItemId: order.foodItemId._id });
-//                 }
-
-//                 return {
-//                     foodName: order.foodItemId?.foodName || "Unknown",
-//                     quantity: order.quantity,
-//                     price: order.foodItemId?.price || 0,
-//                     images
-//                 };
-//             })
-//         );
-//         console.log("itemsssssssss", items)
-
-//         // 4. Final response
-//         return res.status(200).send({
-//             message: "Order detail fetched successfully",
-//             invoice: {
-//                 invoiceId: invoice._id,
-//                 createdAt: invoice.createdAt,
-//                 user: {
-//                     name: invoice.userId.name,
-//                     email: invoice.userId.email,
-//                     phone: invoice.userId.phone,
-//                     joined: invoice.userId.createdAt
-//                 },
-//                 address: invoice.addressId,
-//                 total: invoice.total
-//             },
-//             items
-//         });
-
-//     } catch (error) {
-//         console.log("Error fetching order detail:", error);
-//         return res.status(500).send({ message: "Failed to fetch order detail", error: error.message });
-//     }
-// };
-
 exports.getOrderByInvoiceId = async (req, res) => {
     try {
         const invoiceId = req.params.id;
-        console.log("invoiceidddd", invoiceId);
+        const role = req.user.role;
+        const restaurantId = req.user.restaurantId; // sirf restaurant ke case me hoga
 
-        // 1. Invoice + user + address fetch karo (image bhi lo)
+        // 1. Invoice fetch karo (with user + address info)
         const invoice = await Invoice.findOne({ _id: invoiceId })
             .populate("addressId")
             .populate("userId", "name email phone image createdAt");
-        console.log("invoiceeeee", invoice);
 
         if (!invoice) {
             return res.status(404).send({ message: "Invoice not found" });
         }
 
-        // 2. Orders fetch karo + foodItemId + images populate
-        const orders = await Order.find({ invoiceId })
+        // 2. Orders fetch karo
+        let orderQuery = { invoiceId };
+
+        // Agar restaurant login hai to filter lagao
+        if (role === "restaurant" && restaurantId) {
+            orderQuery.restaurantId = restaurantId;
+        }
+
+        const orders = await Order.find(orderQuery)
             .populate({
                 path: "foodItemId",
                 model: "food-items",
@@ -240,9 +125,8 @@ exports.getOrderByInvoiceId = async (req, res) => {
                     model: "food-images"
                 }
             });
-        console.log("ordersssssss", orders);
 
-        // 3. Manual image fetch agar food-items me ref nahi hai
+        // 3. Items final structure me map karo
         const items = await Promise.all(
             orders.map(async order => {
                 let images = [];
@@ -253,13 +137,13 @@ exports.getOrderByInvoiceId = async (req, res) => {
                     foodName: order.foodItemId?.foodName || "Unknown",
                     quantity: order.quantity,
                     price: order.foodItemId?.price || 0,
+                    restaurantId: order.restaurantId,
                     images
                 };
             })
         );
-        console.log("itemsssssssss", items);
 
-        // 4. Final response
+        // 4. Response
         return res.status(200).send({
             message: "Order detail fetched successfully",
             invoice: {
@@ -269,11 +153,12 @@ exports.getOrderByInvoiceId = async (req, res) => {
                     name: invoice.userId.name,
                     email: invoice.userId.email,
                     phone: invoice.userId.phone,
-                    image: invoice.userId.image || null, // Add profile image
+                    image: invoice.userId.image || null,
                     joined: invoice.userId.createdAt
                 },
                 address: invoice.addressId,
-                total: invoice.total
+                total: invoice.total,
+                status: invoice.status
             },
             items
         });

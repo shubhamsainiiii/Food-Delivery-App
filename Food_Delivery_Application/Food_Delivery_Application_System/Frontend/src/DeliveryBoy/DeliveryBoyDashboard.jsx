@@ -36,7 +36,7 @@ const DeliveryBoyDashboard = () => {
             <DeliveryBoySidebar />
 
             {/* Main Content */}
-            <div className="flex-1 p-6 space-y-8 mt-18">
+            <div className="flex-1 p-6 space-y-8 mt-18 ml-64">
                 {/* Summary cards */}
                 <div className="flex gap-6">
                     <div className="flex items-center space-x-3 bg-white p-4 rounded shadow w-1/3">

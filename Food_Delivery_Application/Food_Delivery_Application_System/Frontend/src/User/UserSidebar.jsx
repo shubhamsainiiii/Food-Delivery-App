@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FaUserCircle, FaBox, FaMapMarkerAlt, FaSignOutAlt } from 'react-icons/fa';
+import { FaUserCircle, FaBox, FaMapMarkerAlt, FaSignOutAlt, FaHistory, FaPlus, FaHome } from 'react-icons/fa';
 import axios from 'axios';
 
 const BASE_URL = "http://localhost:8080";
@@ -32,11 +32,12 @@ const UserSidebar = () => {
     };
 
     const navLinks = [
+        { path: '/user/dashboard', label: 'Dashboard', icon: FaHome },
         { path: '/user/profile', label: 'Change Profile', icon: FaUserCircle },
         { path: '/user/orders', label: 'My Order', icon: FaBox },
         { path: '/user/addresses', label: 'Saved Address', icon: FaMapMarkerAlt },
-        { path: '/user/createaddress', label: 'Create Address', icon: FaMapMarkerAlt },
-        { path: '/user/orderhistory', label: 'Order History', icon: FaMapMarkerAlt },
+        { path: '/user/createaddress', label: 'Create Address', icon: FaPlus },
+        { path: '/user/orderhistory', label: 'Order History', icon: FaHistory },
     ];
 
     return (
