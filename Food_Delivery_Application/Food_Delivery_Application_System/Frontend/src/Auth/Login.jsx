@@ -64,7 +64,6 @@ const Login = () => {
                 localStorage.setItem("user", JSON.stringify(user));
                 localStorage.setItem("restaurantId", user.restaurantId);
 
-
                 if (role === "delivery-boy") {
                     if (user.status === "pending") {
                         toast.error('Your request is in pending state');
@@ -169,7 +168,6 @@ const Login = () => {
                             Forgot Password?
                         </a>
                     </div>
-
                     {/* Submit Button */}
                     <button
                         type="submit"

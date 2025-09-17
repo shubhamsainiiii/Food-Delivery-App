@@ -77,27 +77,31 @@ const DeliveryBoyDetails = () => {
                         </h2>
                         <p className="flex items-center gap-3">
                             <FaUser className="text-gray-700" />
-                            <strong>Name:</strong> {deliveryBoy.name}
+                            <strong>Name :</strong> {deliveryBoy.name}
                         </p>
                         <p className="flex items-center gap-3">
                             <FaEnvelope className="text-gray-700" />
-                            <strong>Email:</strong> {deliveryBoy.email}
+                            <strong>Email :</strong> {deliveryBoy.email}
                         </p>
                         <p className="flex items-center gap-3">
                             <FaPhone className="text-gray-700" />
-                            <strong>Phone:</strong> {deliveryBoy.phone}
+                            <strong>Phone :</strong> {deliveryBoy.phone}
                         </p>
                         <p className="flex items-center gap-3">
                             <FaMapMarkerAlt className="text-gray-700" />
-                            <strong>Address:</strong> {deliveryBoy.address}
+                            <strong>Address :</strong> {deliveryBoy.address}
                         </p>
                         <p className="flex items-center gap-3">
                             <FaMotorcycle className="text-gray-700" />
-                            <strong>Vehicle Number:</strong> {deliveryBoy.vehicleNumber}
+                            <strong>Vehicle Number :</strong> {deliveryBoy.vehicleNumber}
                         </p>
                         <p className="flex items-center gap-3">
                             <FaIdCard className="text-gray-700" />
-                            <strong>Aadhar Number:</strong> {deliveryBoy.aadharNumber}
+                            <strong>Aadhar Number :</strong> {deliveryBoy.aadharNumber}
+                        </p>
+                        <p className="flex items-center gap-3">
+                            <FaIdCard className="text-gray-700" />
+                            <strong>Status :</strong>{deliveryBoy.status}
                         </p>
                     </div>
 

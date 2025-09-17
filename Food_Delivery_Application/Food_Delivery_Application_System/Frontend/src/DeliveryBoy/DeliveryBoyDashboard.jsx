@@ -31,7 +31,7 @@ const DeliveryBoyDashboard = () => {
     ];
 
     return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex min-h-screen bg-gradient-to-br from-[#fff4e5] to-[#f7fafc]">
             {/* Sidebar */}
             <DeliveryBoySidebar />
 

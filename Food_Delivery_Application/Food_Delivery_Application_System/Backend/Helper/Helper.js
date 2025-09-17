@@ -1,4 +1,5 @@
 const cloudinary = require("cloudinary").v2;
+const DeliveryBoyLocation = require('../Models/DeliveryBoyLocation');
 
 cloudinary.config({
     cloud_name: "ds4t2aywj",
@@ -7,9 +8,7 @@ cloudinary.config({
 });
 exports.uploadImage = async (files) => {
     const fileArray = Array.isArray(files.images) ? files.images : [files.images]; // Safely extract array of files from `images` key
-
     const results = []; // This will store the result of each upload
-
     // Upload each file one by one
     for (const file of fileArray) {
         try {
@@ -35,3 +34,13 @@ exports.uploadImage = async (files) => {
 
     return results; // Return the list of upload results
 };
+
+const updateDeliveryBoyLocation = async (deliveryBoyId, latitude, longitude) => {
+    await DeliveryBoyLocation.findOneAndUpdate(
+        { deliveryBoyId },
+        { latitude, longitude },
+        { new: true, upsert: true } // create if not exists
+    );
+};
+
+module.exports = { updateDeliveryBoyLocation };

@@ -4,7 +4,63 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { uploadImage } = require('../Helper/Helper')
 const secretkey = process.env.SECRETKEY;
+const DeliveryBoyLocation = require('../Models/DeliveryBoyLocation')
 
+
+
+// exports.SignupDeliveryBoy = async (req, res) => {
+//     try {
+//         const { name, email, phone, password, latitude, longitude } = req.body;
+
+//         if (!(name && email && phone && password && latitude && longitude)) {
+//             return res.status(400).send({ message: "All input required including latitude & longitude" });
+//         }
+
+//         const existingMail = await deliveryBoy.findOne({ email });
+//         if (existingMail) {
+//             return res.status(409).send({ message: "Delivery Boy already exists" });
+//         }
+
+//         const salt = bcrypt.genSaltSync(12);
+//         const hashpass = bcrypt.hashSync(password, salt);
+
+//         const deliveryBoyData = new deliveryBoy({
+//             name,
+//             email,
+//             phone,
+//             password: hashpass,
+//             location: {
+//                 type: "Point",
+//                 coordinates: [longitude, latitude]
+//             }
+//         });
+
+//         await deliveryBoyData.save();
+
+//         // Also save to user table
+//         const userData = new user({
+//             name,
+//             email,
+//             phone,
+//             password: hashpass,
+//             status: 'pending',
+//             role: 'delivery-boy',
+//             deliveryBoyId: deliveryBoyData._id
+//         });
+
+//         await userData.save();
+
+//         return res.status(201).send({
+//             message: "Delivery Boy Signup Successfully",
+//             deliveryBoyData
+//         });
+
+//     } catch (error) {
+//         return res.status(500).send({ message: error.message });
+//     }
+// };
+
+// Login
 
 exports.SignupDeliveryBoy = async (req, res) => {
     try {
@@ -22,20 +78,24 @@ exports.SignupDeliveryBoy = async (req, res) => {
         const salt = bcrypt.genSaltSync(12);
         const hashpass = bcrypt.hashSync(password, salt);
 
+        // Save delivery boy data
         const deliveryBoyData = new deliveryBoy({
             name,
             email,
             phone,
-            password: hashpass,
-            location: {
-                type: "Point",
-                coordinates: [longitude, latitude]
-            }
+            password: hashpass
         });
-
         await deliveryBoyData.save();
 
-        // Also save to user table
+        // Save location data in DeliveryBoyLocation table
+        const locationData = new DeliveryBoyLocation({
+            deliveryBoyId: deliveryBoyData._id,
+            latitude,
+            longitude
+        });
+        await locationData.save();
+        console.log("locationDataaaaaaaa", locationData)
+        // Also save to User table
         const userData = new user({
             name,
             email,
@@ -45,12 +105,12 @@ exports.SignupDeliveryBoy = async (req, res) => {
             role: 'delivery-boy',
             deliveryBoyId: deliveryBoyData._id
         });
-
         await userData.save();
 
         return res.status(201).send({
             message: "Delivery Boy Signup Successfully",
-            deliveryBoyData
+            deliveryBoy: deliveryBoyData,
+            location: locationData
         });
 
     } catch (error) {
@@ -58,19 +118,44 @@ exports.SignupDeliveryBoy = async (req, res) => {
     }
 };
 
+// exports.loginDeliveryBoy = async (req, res) => {
+//     try {
+//         const { email, password, latitude, longitude } = req.body;
+//         if (!(email && password && latitude && longitude)) {
+//             return res.status(400).send({ message: "All input required including latitude & longitude" });
+//         }
+
+//         const existing = await deliveryBoy.findOne({ email });
+//         if (!existing) {
+//             return res.status(404).send({ message: "No delivery boy found with this email" });
+//         }
+
+//         const match = await bcrypt.compare(password, existing.password);
+//         if (!match) {
+//             return res.status(401).send({ message: "Invalid email or password" });
+//         }
+
+//         // ✅ update location using helper
+//         await updateDeliveryBoyLocation(email, latitude, longitude);
+
+//         const token = jwt.sign({ email: existing.email }, secretkey, { expiresIn: '24h' });
+
+//         return res.status(200).send({
+//             message: "Delivery Boy Login Successful",
+//             role: 'delivery-boy',
+//             token
+//         });
+
+//     } catch (error) {
+//         return res.status(500).send({ message: error.message });
+//     }
+// };
+
+
 
 // deliveryBoyController.js
 
-const updateDeliveryBoyLocation = async (email, latitude, longitude) => {
-    const existing = await deliveryBoy.findOne({ email });
-    if (!existing) return null;
 
-    existing.location.coordinates = [longitude, latitude];
-    await existing.save();
-    return existing;
-};
-
-// Login
 exports.loginDeliveryBoy = async (req, res) => {
     try {
         const { email, password, latitude, longitude } = req.body;
@@ -88,9 +173,9 @@ exports.loginDeliveryBoy = async (req, res) => {
             return res.status(401).send({ message: "Invalid email or password" });
         }
 
-        // ✅ update location using helper
-        await updateDeliveryBoyLocation(email, latitude, longitude);
-
+        // Update location
+        await updateDeliveryBoyLocation(existing._id, latitude, longitude);
+        console.log("updateDeliveryBoyLocationnnnnnnnn", updateDeliveryBoyLocation)
         const token = jwt.sign({ email: existing.email }, secretkey, { expiresIn: '24h' });
 
         return res.status(200).send({
@@ -104,88 +189,30 @@ exports.loginDeliveryBoy = async (req, res) => {
     }
 };
 
-// Logout
-exports.logoutDeliveryBoy = async (req, res) => {
-    try {
-        const { email, latitude, longitude } = req.body;
-        if (!(email && latitude && longitude)) {
-            return res.status(400).send({ message: "Email and location required" });
-        }
 
-        const updated = await updateDeliveryBoyLocation(email, latitude, longitude);
-        if (!updated) {
-            return res.status(404).send({ message: "No delivery boy found with this email" });
-        }
 
-        return res.status(200).send({ message: "Logout successful & location updated" });
 
-    } catch (error) {
-        return res.status(500).send({ message: error.message });
-    }
+const updateDeliveryBoyLocation = async (email, latitude, longitude) => {
+    const existing = await deliveryBoy.findOne({ email });
+    if (!existing) return null;
+
+    existing.location.coordinates = [longitude, latitude];
+    await existing.save();
+    return existing;
 };
 
-
-
-
-
-
-
-
-
-
-
-// Login
-// exports.loginDeliveryBoy = async (req, res) => {
-//     try {
-//         const { email, password, latitude, longitude } = req.body;
-
-//         if (!(email && password && latitude && longitude)) {
-//             return res.status(400).send({ message: "All input required including latitude & longitude" });
-//         }
-
-//         const existing = await deliveryBoy.findOne({ email });
-//         if (!existing) {
-//             return res.status(404).send({ message: "No delivery boy found with this email" });
-//         }
-
-//         const match = await bcrypt.compare(password, existing.password);
-//         if (!match) {
-//             return res.status(401).send({ message: "Invalid email or password" });
-//         }
-
-//         // Update location on login
-//         existing.location.coordinates = [longitude, latitude];
-//         await existing.save();
-
-//         const token = jwt.sign({ email: existing.email }, secretkey, { expiresIn: '24h' });
-
-//         return res.status(200).send({
-//             message: "Delivery Boy Login Successful",
-//             role: 'delivery-boy',
-//             token
-//         });
-
-//     } catch (error) {
-//         return res.status(500).send({ message: error.message });
-//     }
-// };
-
-// // Logout (updates location)
+// Logout
 // exports.logoutDeliveryBoy = async (req, res) => {
 //     try {
 //         const { email, latitude, longitude } = req.body;
-
 //         if (!(email && latitude && longitude)) {
 //             return res.status(400).send({ message: "Email and location required" });
 //         }
 
-//         const existing = await deliveryBoy.findOne({ email });
-//         if (!existing) {
+//         const updated = await updateDeliveryBoyLocation(email, latitude, longitude);
+//         if (!updated) {
 //             return res.status(404).send({ message: "No delivery boy found with this email" });
 //         }
-
-//         existing.location.coordinates = [longitude, latitude];
-//         await existing.save();
 
 //         return res.status(200).send({ message: "Logout successful & location updated" });
 
@@ -193,6 +220,24 @@ exports.logoutDeliveryBoy = async (req, res) => {
 //         return res.status(500).send({ message: error.message });
 //     }
 // };
+
+
+exports.logoutDeliveryBoy = async (req, res) => {
+    try {
+        const { deliveryBoyId, latitude, longitude } = req.body;
+
+        if (!(deliveryBoyId && latitude && longitude)) {
+            return res.status(400).send({ message: "All input required including latitude & longitude" });
+        }
+
+        await updateDeliveryBoyLocation(deliveryBoyId, latitude, longitude);
+
+        return res.status(200).send({ message: "Delivery Boy Logout Successful & Location Updated" });
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+};
+
 
 exports.updateDeliveryBoy = async (req, res) => {
     try {

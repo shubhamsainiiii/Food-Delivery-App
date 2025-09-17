@@ -39,13 +39,13 @@ const DeliveryBoySidebar = () => {
     ];
 
     return (
-        <aside className="w-64 h-screen fixed top-0 left-0 bg-gradient-to-br from-[#fff4e5] to-[#f7fafc] shadow-md p-6 border-r border-gray-200 flex flex-col">
+        <aside className="w-64 h-screen fixed top-0 left-0 bg-gradient-to-br from-[#fff4e5] to-[#f7fafc] shadow-sm p-6 border-r border-gray-200 flex flex-col mt-8">
 
             {/* Profile Section */}
-            <div className="text-center mb-10">
-                <div className="relative w-28 h-28 mt-10 m-auto mb-5">
+            <div className="text-center mb-6">
+                <div className="relative w-28 h-28 mt-10 m-auto mb-4">
                     <img
-                        className="w-full h-full rounded-full object-cover"
+                        className="w-full h-full rounded-full object-cover hover:scale-103 transition-all duration-500"
                         src={deliveryBoy?.image || 'https://via.placeholder.com/150'}
                         alt="Delivery Boy Avatar"
                     />
@@ -63,7 +63,7 @@ const DeliveryBoySidebar = () => {
                             <NavLink
                                 to={link.path}
                                 className={({ isActive }) =>
-                                    `flex items-center px-4 py-2 my-2 rounded-lg transition-colors duration-200 ${isActive
+                                    `flex items-center px-4 py-2.5 my-2 rounded-lg transition-colors duration-200 ${isActive
                                         ? 'bg-orange-100 text-orange-600 font-bold border-l-4 border-orange-500'
                                         : 'text-gray-600 hover:bg-gray-100'
                                     }`
