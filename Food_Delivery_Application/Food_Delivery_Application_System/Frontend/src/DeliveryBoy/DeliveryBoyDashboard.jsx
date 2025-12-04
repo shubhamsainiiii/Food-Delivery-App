@@ -32,12 +32,8 @@ const DeliveryBoyDashboard = () => {
 
     return (
         <div className="flex min-h-screen bg-gradient-to-br from-[#fff4e5] to-[#f7fafc]">
-            {/* Sidebar */}
             <DeliveryBoySidebar />
-
-            {/* Main Content */}
             <div className="flex-1 p-6 space-y-8 mt-18 ml-64">
-                {/* Summary cards */}
                 <div className="flex gap-6">
                     <div className="flex items-center space-x-3 bg-white p-4 rounded shadow w-1/3">
                         <FaWallet className="text-green-500 text-3xl" />
@@ -54,8 +50,6 @@ const DeliveryBoyDashboard = () => {
                         </div>
                     </div>
                 </div>
-
-                {/* Recent Orders */}
                 <div className="bg-white p-6 rounded shadow">
                     <h2 className="text-xl font-semibold mb-4 flex items-center space-x-2">
                         <FaClock />
@@ -76,7 +70,6 @@ const DeliveryBoyDashboard = () => {
                     </ul>
                 </div>
 
-                {/* Performance Chart */}
                 <div className="bg-white p-6 rounded shadow">
                     <h2 className="text-xl font-semibold mb-4">Performance This Week</h2>
                     <ResponsiveContainer width="100%" height={250}>

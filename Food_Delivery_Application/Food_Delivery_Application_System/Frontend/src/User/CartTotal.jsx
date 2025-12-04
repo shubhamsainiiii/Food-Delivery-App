@@ -14,7 +14,7 @@ const CartTotal = ({ cartItems }) => {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-md p-6 w-full">
+        <div className="rounded-lg shadow-sm shadow-gray-600 p-6 w-full">
             <h3 className="text-xl font-semibold mb-4 text-gray-800">Cart Summary</h3>
 
             <ul className="divide-y divide-gray-200">

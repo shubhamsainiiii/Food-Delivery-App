@@ -1,4 +1,3 @@
-// src/components/TotalRevenueChart.jsx
 import React from "react";
 import {
     LineChart,
@@ -38,7 +37,7 @@ const TotalRevenueChart = () => {
                     <Line
                         type="monotone"
                         dataKey="current"
-                        stroke="#16a34a" // green
+                        stroke="#16a34a" 
                         strokeWidth={2}
                         dot={{ r: 4 }}
                         activeDot={{ r: 6 }}
@@ -46,7 +45,7 @@ const TotalRevenueChart = () => {
                     <Line
                         type="monotone"
                         dataKey="previous"
-                        stroke="#dc2626" // red
+                        stroke="#dc2626" 
                         strokeWidth={2}
                         dot={{ r: 4 }}
                         activeDot={{ r: 6 }}

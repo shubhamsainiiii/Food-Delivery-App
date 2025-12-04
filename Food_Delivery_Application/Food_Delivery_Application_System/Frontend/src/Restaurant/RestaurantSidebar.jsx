@@ -23,7 +23,7 @@ const RestaurantSidebar = () => {
                 setOwner({
                     name: res.data.user.name,
                     image: res.data.user.image || '',
-                    restaurantId: res.data.user.restaurantId || ''   // ✅ restaurantId store
+                    restaurantId: res.data.user.restaurantId || ''   
                 });
             } catch (error) {
                 console.error('Failed to fetch owner data:', error);
@@ -34,7 +34,7 @@ const RestaurantSidebar = () => {
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem('userToken'); // ✅ Correct token key
+        localStorage.removeItem('userToken'); 
         navigate('/login');
     };
 

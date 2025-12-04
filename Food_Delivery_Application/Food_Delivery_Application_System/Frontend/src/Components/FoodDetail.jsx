@@ -125,9 +125,6 @@ const FoodDetail = () => {
     return (
         <div className='bg-gradient-to-br from-[#fff4e5] to-[#f7fafc]'>
             <div className="max-w-6xl mx-auto px-2 py-4 grid grid-cols-1 lg:grid-cols-2 gap-6 mt-18 overflow-hidden ">
-                {/* <h2 className="text-2xl font-bold text-orange-600 text-center mb-10">🍽️ Discover Deliciousness!</h2> */}
-
-                {/* Left: Images */}
                 <div>
                     <div className="rounded-xl overflow-hidden shadow-md">
                         <img
@@ -137,7 +134,6 @@ const FoodDetail = () => {
                         />
                     </div>
 
-                    {/* Thumbnails */}
                     <div className="flex justify-start gap-4 mt-4">
                         {images?.map((img, i) => (
                             <button
@@ -159,7 +155,6 @@ const FoodDetail = () => {
 
                 </div>
 
-                {/* Right: Food Details */}
                 <div className="flex flex-col justify-between gap-6">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-800 mb-2">{foodName}</h1>
@@ -180,7 +175,6 @@ const FoodDetail = () => {
                         <p className="mt-4 text-gray-600 leading-relaxed">{description}</p>
                     </div>
 
-                    {/* Quantity + Cart Actions */}
                     {isAvailable && (
                         <div className="flex items-center gap-4 mt-6">
                             {addedToCart ? (
@@ -212,7 +206,6 @@ const FoodDetail = () => {
                         </div>
                     )}
 
-                    {/* Restaurant Info */}
                     <div className="mt-10 space-y-2">
                         <h2 className="text-xl font-semibold text-gray-800 mb-2">
 
@@ -231,8 +224,6 @@ const FoodDetail = () => {
                             {restaurant?.address?.street}, {restaurant?.address?.city}
                         </p>
                     </div>
-
-
                 </div>
             </div>
         </div>

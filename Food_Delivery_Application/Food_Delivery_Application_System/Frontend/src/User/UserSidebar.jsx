@@ -36,14 +36,13 @@ const UserSidebar = () => {
         { path: '/user/profile', label: 'Change Profile', icon: FaUserCircle },
         { path: '/user/orders', label: 'My Order', icon: FaBox },
         { path: '/user/addresses', label: 'Saved Address', icon: FaMapMarkerAlt },
-        { path: '/user/createaddress', label: 'Create Address', icon: FaPlus },
         { path: '/user/orderhistory', label: 'Order History', icon: FaHistory },
     ];
 
     return (
-        <aside className="w-64 h-screen mt-6 fixed top-0 left-0 bg-gradient-to-br from-[#fff4e5] to-[#f7fafc]  shadow-md p-6 border-r border-gray-200 flex flex-col">
+        <aside className="w-64 mt-15 h-screen fixed top-0 left-0 bg-gradient-to-br from-[#fff4e5] to-[#f7fafc]  shadow-sm p-6 border-r border-gray-200 flex flex-col">
             <div className="text-center mb-10">
-                <div className="relative w-28 h-28 mt-10 m-auto mb-5">
+                <div className="relative w-28 h-28 m-auto mb-4">
                     <img
                         className="w-full h-full rounded-full object-cover"
                         src={user?.image ? user.image : " "}
@@ -54,8 +53,8 @@ const UserSidebar = () => {
                 {/* <p className="text-sm text-gray-500">{user?.email || 'user@example.com'}</p> */}
             </div>
 
-            <nav className="flex-grow">
-                <ul>
+            <nav className="flex-grow mb-">
+                <ul className=''>
                     {navLinks.map((link) => (
                         <li key={link.path}>
                             <NavLink
@@ -77,7 +76,7 @@ const UserSidebar = () => {
 
             <button
                 onClick={handleLogout}
-                className="flex items-center px-4 py-3 mb-10 rounded-lg text-gray-600 hover:bg-red-100 hover:text-red-600 transition-colors duration-200 cursor-pointer"
+                className="flex items-center px-4 py-3 mb-15 rounded-lg text-gray-600 hover:bg-red-100 hover:text-red-600 transition-colors duration-200 cursor-pointer"
             >
                 <FaSignOutAlt className="mr-3" /> Log Out
             </button>

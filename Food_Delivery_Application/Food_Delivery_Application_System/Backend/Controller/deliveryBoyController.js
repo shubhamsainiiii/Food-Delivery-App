@@ -172,7 +172,6 @@ exports.loginDeliveryBoy = async (req, res) => {
         if (!match) {
             return res.status(401).send({ message: "Invalid email or password" });
         }
-
         // Update location
         await updateDeliveryBoyLocation(existing._id, latitude, longitude);
         console.log("updateDeliveryBoyLocationnnnnnnnn", updateDeliveryBoyLocation)

@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import axios from 'axios';
 
-export default function Navbar() {
+
+const Navbar = () => {
     const navigate = useNavigate();
     const [cartCount, setCartCount] = useState(0);
     const [userData, setUserData] = useState(() => JSON.parse(localStorage.getItem("user")));
@@ -37,15 +38,13 @@ export default function Navbar() {
         fetchCartCount();
 
         const handleCartUpdated = () => {
-            fetchCartCount(); // refresh cart count
+            fetchCartCount();
         };
 
         const handleProfileUpdated = () => {
             const updatedUser = JSON.parse(localStorage.getItem("user"));
             setUserData(updatedUser);
         };
-
-        // Listen to custom cartUpdated event
         window.addEventListener("cartUpdated", handleCartUpdated);
         window.addEventListener("profileUpdated", handleProfileUpdated);
 
@@ -72,7 +71,6 @@ export default function Navbar() {
                 </nav>
 
                 <div className="flex items-center space-x-4">
-                    {/* Cart Icon */}
                     <div className="relative cursor-pointer" onClick={handleCartClick}>
                         <FaShoppingCart className="text-xl text-black" />
                         {token && cartCount > 0 && (
@@ -82,7 +80,6 @@ export default function Navbar() {
                         )}
                     </div>
 
-                    {/* User Auth */}
                     {token ? (
                         <>
                             <img
@@ -106,5 +103,7 @@ export default function Navbar() {
                 </div>
             </div>
         </header>
-    );
+    )
 }
+
+export default Navbar

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./Sidebar";
-
-// Filled icons from different sets
 import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaClock, FaStar, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { MdRestaurantMenu, MdWarning } from "react-icons/md";
 import { RiFileListFill } from "react-icons/ri";
@@ -48,15 +46,13 @@ const RestaurantDetails = () => {
 
     return (
         <div className="flex min-h-screen bg-gradient-to-br from-[#fff4e5] to-[#f7fafc] mt-18">
-            {/* Sidebar */}
+            
             <div className="w-64">
                 <Sidebar />
             </div>
 
-            {/* Main Content */}
             <div className="flex-1 p-8">
                 <div className="p-8">
-                    {/* Header */}
                     <div className="flex items-center gap-4 border-b pb-4 mb-6">
                         <div className="p-3 bg-orange-100 rounded-full">
                             <MdRestaurantMenu className="text-4xl text-orange-500" />
@@ -67,7 +63,6 @@ const RestaurantDetails = () => {
                         </div>
                     </div>
 
-                    {/* Details Grid */}
                     <div className="grid sm:grid-cols-2 gap-6 text-gray-700">
                         <p className="flex items-center gap-3">
                             <FaEnvelope className="text-gray-800 text-lg" />
@@ -133,7 +128,6 @@ const RestaurantDetails = () => {
                         </p>
                     </div>
 
-                    {/* Gallery */}
                     {Array.isArray(restaurant.image) && restaurant.image.length > 0 && (
                         <div className="mt-8">
                             <h2 className="text-xl font-semibold mb-3">Gallery</h2>

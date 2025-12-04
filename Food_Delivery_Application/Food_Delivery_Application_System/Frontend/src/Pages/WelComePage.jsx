@@ -50,14 +50,12 @@ const WelcomePage = () => {
             <Slider {...sliderSettings} className="w-full h-full">
                 {slides.map((slide, index) => (
                     <div key={index} className="w-full h-screen relative">
-                        {/* Slide background */}
                         <img
                             src={slide.img}
                             alt={`Slide ${index + 1}`}
                             className="w-full h-screen object-cover"
                         />
 
-                        {/* Overlay content */}
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-white bg-black/60 px-4 text-center">
                             <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4">
                                 {slide.heading} <br />

@@ -11,9 +11,7 @@ const Restaurants = () => {
             setLoading(true);
             setErr("");
             try {
-                // Adjust the API URL if needed
                 const res = await axios.get("http://localhost:8080/Restaurant/");
-                // If your backend returns { data: [...] }, extract accordingly:
                 setRestaurants(res.data.data || []);
             } catch (error) {
                 console.log("error", error)
@@ -74,7 +72,6 @@ const Restaurants = () => {
                                             {restaurant.address?.city || ""}
                                         </p>
                                     </div>
-                                    {/* You can add a "View Menu" button here if needed */}
                                 </div>
                             ))
                         ) : (

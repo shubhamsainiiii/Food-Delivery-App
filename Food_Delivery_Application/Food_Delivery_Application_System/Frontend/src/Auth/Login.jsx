@@ -33,7 +33,6 @@ const Login = () => {
             );
         });
 
-    // 🔹 Update location in DB
     const updateLocation = async (userId, latitude, longitude) => {
         try {
             await axios.put(`http://localhost:8080/DeliveryBoy/update-location/${userId}`, {
@@ -58,7 +57,6 @@ const Login = () => {
             const { user, role, token } = res.data;
 
             if (res.status === 200 || res.status === 202) {
-                // Save session
                 localStorage.setItem('userToken', token || '');
                 localStorage.setItem('userRole', role || '');
                 localStorage.setItem("user", JSON.stringify(user));
@@ -73,8 +71,6 @@ const Login = () => {
                         return;
                     } else {
                         toast.success('Login successful!');
-
-                        // Get location and update in DB
                         try {
                             const { latitude, longitude } = await getLocation();
                             await updateLocation(user._id, latitude, longitude);
@@ -111,20 +107,16 @@ const Login = () => {
 
     return (
         <div className="relative min-h-screen flex items-center justify-center px-3 py-12 overflow-hidden">
-            {/* Blurred Background */}
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-xs scale-102"
                 style={{ backgroundImage: `url(${bgImage})` }}
             ></div>
             <div className="absolute inset-0 bg-black/25"></div>
-
-            {/* Login Card */}
             <div className="relative z-10 w-full max-w-sm mx-auto rounded-[2.5rem] p-8 bg-white/0 shadow-2xl backdrop-blur-md border border-white/20">
                 <div className="flex justify-center mb-6">
                     <FaUserCircle size={100} className="text-white/50" />
                 </div>
                 <form className="space-y-2" onSubmit={handleSubmit}>
-                    {/* Email */}
                     <div className="relative mb-4">
                         <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
                         <input
@@ -137,8 +129,6 @@ const Login = () => {
                             required
                         />
                     </div>
-
-                    {/* Password */}
                     <div className="relative mb-6">
                         <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" size={18} />
                         <input
@@ -158,7 +148,7 @@ const Login = () => {
                         </div>
                     </div>
 
-                    {/* Remember + Forgot */}
+
                     <div className="flex items-center justify-between mb-6">
                         <label className="flex items-center text-sm text-white">
                             <input type="checkbox" className="mr-2 accent-white/70" />
@@ -168,7 +158,6 @@ const Login = () => {
                             Forgot Password?
                         </a>
                     </div>
-                    {/* Submit Button */}
                     <button
                         type="submit"
                         disabled={loading}
@@ -178,25 +167,14 @@ const Login = () => {
                     </button>
                 </form>
 
-                {/* Signup Link */}
                 <div className="mt-8">
                     <a
                         href="/signup"
-                        className="block w-full py-2.5 text-center rounded-lg text-white/75 font-semibold tracking-wider bg-white/10 hover:bg-white/20 transition-all duration-300"
+                        className="block w-full py-2.5  text-center rounded-lg text-white/75 font-semibold tracking-wider bg-white/10 hover:bg-white/20 transition-all duration-300"
                     >
                         Create Account
                     </a>
                 </div>
-
-                {/* Logout Button (for demo, you can move this to dashboard) */}
-                {/* <div className="mt-4">
-                    <button
-                        onClick={handleLogout}
-                        className="w-full py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                    >
-                        Logout
-                    </button>
-                </div> */}
             </div>
         </div>
     );

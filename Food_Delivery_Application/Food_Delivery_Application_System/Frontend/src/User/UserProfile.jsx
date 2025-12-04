@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaUser, FaEnvelope, FaPhone, FaLock, FaCamera } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import UserSidebar from "./UserSidebar";
 
 const BASE_URL = "http://localhost:8080";
@@ -42,7 +42,7 @@ const UserProfile = () => {
         }
     };
 
-    // Open edit modal and prefill inputVal with current data
+
     const handleEdit = (field) => {
         if (!user) return;
         let val = "";
@@ -56,14 +56,14 @@ const UserProfile = () => {
     const handleEditSubmit = async (e) => {
         e.preventDefault();
 
-        // Avoid submitting empty values accidentally
+       
         if (!inputVal.trim()) {
             toast.error("Value cannot be empty.");
             return;
         }
 
         try {
-            const payload = { [modal]: inputVal.trim() }; // trimmed for safety
+            const payload = { [modal]: inputVal.trim() }; 
             const res = await axios.put(`${BASE_URL}/User/update`, payload, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -73,7 +73,7 @@ const UserProfile = () => {
 
             setModal(null);
             toast.success("Profile updated!");
-            navigate('/user-dashboard')
+            navigate('/user/dashboard')
         } catch (error) {
             console.log("error", error)
             toast.error("Update failed.");
@@ -118,9 +118,9 @@ const UserProfile = () => {
     }
 
     return (
-        <div className="h-screen bg-gradient-to-br from-[#fff4e5] to-[#f7fafc] flex flex-col items-center py-10 px-4 mt-18">
+        <div className="bg-gradient-to-br from-[#fff4e5] to-[#f7fafc] flex flex-col items-center py-8 px-4 mt-18">
             <UserSidebar />
-            <div className="w-full max-w-2xl bg-gradient-to-br from-[#fff4e5] to-[#f7fafc] rounded-xl shadow-sm shadow-gray-400 p-8 space-y-8">
+            <div className="w-full max-w-2xl bg-gradient-to-br from-[#fff4e5] to-[#f7fafc] rounded-xl shadow-xs shadow-gray-600 p-8 space-y-8 ml-40">
                 {/* Header / Avatar */}
                 <div className="flex items-center space-x-4 pb-6 border-b">
                     <div className="relative">
@@ -199,27 +199,26 @@ const UserProfile = () => {
                                 <div className="text-gray-800">********</div>
                             </div>
                         </div>
-                        <button
-                            onClick={() => toast.info("Password change via separate flow")}
+                        <Link to='/verifyemail'
                             className="bg-white border border-orange-400 text-orange-500 rounded-lg px-6 py-1.5 hover:bg-orange-50 transition-all cursor-pointer duration-300 text-sm"
                         >
                             Change
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>
 
             {/* Modal for editing name or phone */}
             {["name", "phone"].includes(modal) && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
-                    <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-xs">
+                <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#fff4e5] to-[#f7fafc] z-50">
+                    <div className="rounded-xl shadow-xs shadow-gray-700 p-6 w-full max-w-xs">
                         <h2 className="font-bold mb-4 capitalize">
                             Change {modal === "name" ? "Name" : "Phone Number"}
                         </h2>
                         <form onSubmit={handleEditSubmit} className="space-y-3">
                             <input
                                 type={modal === "phone" ? "tel" : "text"}
-                                className="w-full border px-3 py-2 rounded-lg"
+                                className="w-full border border-gray-500 px-3 py-2 rounded-lg outline-none"
                                 value={inputVal}
                                 onChange={(e) => setInputVal(e.target.value)}
                                 required
@@ -229,13 +228,13 @@ const UserProfile = () => {
                                 <button
                                     type="button"
                                     onClick={() => setModal(null)}
-                                    className="px-4 py-2 rounded bg-gray-300 cursor-pointer"
+                                    className="px-4 py-2 rounded bg-gray-400 cursor-pointer hover:opacity-80 transition-all duration-300"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 rounded bg-orange-500 text-white cursor-pointer"
+                                    className="px-4 py-2 rounded bg-orange-500 text-white cursor-pointer hover:bg-orange-600 transition-all duration-300"
                                 >
                                     Update
                                 </button>

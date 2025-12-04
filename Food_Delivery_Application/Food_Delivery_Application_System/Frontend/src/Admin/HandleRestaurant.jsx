@@ -22,7 +22,7 @@ const HandleRestaurant = () => {
         fetchRestaurants();
     }, []);
 
-    // ✅ Fetch all restaurants with token
+
     const fetchRestaurants = async () => {
         setLoading(true);
         const token = localStorage.getItem("userToken");
@@ -47,7 +47,7 @@ const HandleRestaurant = () => {
         }
     };
 
-    // ✅ Approve / Reject restaurant request with token
+   
     const handleStatusChange = async (restaurantId, newStatus) => {
         const token = localStorage.getItem("userToken");
         if (!token) {

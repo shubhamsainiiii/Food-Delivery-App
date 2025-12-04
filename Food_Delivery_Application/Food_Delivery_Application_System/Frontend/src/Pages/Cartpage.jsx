@@ -94,9 +94,8 @@ const Cartpage = () => {
             <div className="max-w-7xl mx-auto">
                 <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Your Cart</h2>
 
-                {/* Cart Content: Left Items + Right Summary */}
+
                 <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Left: Cart Items */}
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6">
                         {cartItems.map((item) => (
                             <CartItem
@@ -108,13 +107,11 @@ const Cartpage = () => {
                         ))}
                     </div>
 
-                    {/* Right: Cart Summary */}
                     <div className="w-full lg:w-[350px]">
                         <CartTotal cartItems={cartItems} />
                     </div>
                 </div>
 
-                {/* Buttons */}
                 <div className="mt-8 text-center space-x-4">
                     <button
                         onClick={handleClearCart}

@@ -4,8 +4,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/autoplay';
 import scooter from '../assets/scooter.png';
-
-// Category images imports...
 import pizza from '../assets/categories/pizza.png';
 import chicken from '../assets/categories/chicken.png';
 import burger from '../assets/categories/burger.png';
@@ -57,7 +55,7 @@ const Hero = ({ searchTerm, setSearchTerm }) => {
 
     return (
         <section className="relative bg-[#1c1c1c] text-white overflow-hidden">
-            <div className="relative z-10 px-6 py-24 max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-12">
+            <div className="relative z-10 px-6 py-24 max-w-7xl mx-auto grid md:grid-cols-2  items-center gap-12">
                 <div>
                     <h1 className="text-4xl sm:text-5xl font-bold mb-6">
                         Discover restaurants and food deliver near you
@@ -82,7 +80,7 @@ const Hero = ({ searchTerm, setSearchTerm }) => {
             </div>
             {/* Category Slider */}
             <div className="bg-gradient-to-br from-[#faebd7] to-[#f7fafc] py-20">
-                <div className="max-w-7xl px-10">
+                <div className="max-w-7xl mx-auto px-10">
                     <Swiper
                         loop={true}
                         spaceBetween={20}
@@ -99,7 +97,7 @@ const Hero = ({ searchTerm, setSearchTerm }) => {
                                     className="flex flex-col items-center justify-center min-w-[80px] p-6 bg-white/70 rounded-3xl m-1 hover:scale-105 transition-all duration-300 cursor-pointer"
                                     onClick={() => setSearchTerm(item.name)}
                                 >
-                                    <img src={item.image} alt={item.name} className="h-20 w-25 object-contain mb-2 " />
+                                    <img src={item.image} alt={item.name} className="h-20 w-30 object-contain mb-2 " />
                                     <p className="text-black font-medium text-center text-sm">{item.name}</p>
                                 </div>
                             </SwiperSlide>

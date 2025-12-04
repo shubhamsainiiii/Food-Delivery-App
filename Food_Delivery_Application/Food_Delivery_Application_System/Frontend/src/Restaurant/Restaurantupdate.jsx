@@ -32,7 +32,7 @@ const RestaurantUpdate = () => {
     const fileInputRef = useRef();
     const { id: restaurantId } = useParams();
 
-    // Fetch on mount
+
     useEffect(() => {
         const fetchRestaurantData = async () => {
             try {
@@ -47,7 +47,7 @@ const RestaurantUpdate = () => {
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
 
-                const data = res.data.restaurant || res.data; // adjust to your API shape
+                const data = res.data.restaurant || res.data; 
 
                 setFormData({
                     restaurantName: data.restaurantName || "",
@@ -133,14 +133,11 @@ const RestaurantUpdate = () => {
             toast.success("Restaurant updated successfully");
             navigate('/restaurant/dashboard')
 
-            // ------------- Update localStorage user image here -------------
             const updatedOwnerImageUrl = response.data?.restaurant?.ownerImage;
             if (updatedOwnerImageUrl) {
                 let user = JSON.parse(localStorage.getItem("user")) || {};
                 user.image = updatedOwnerImageUrl;
                 localStorage.setItem("user", JSON.stringify(user));
-
-                // Dispatch custom event to notify other components
                 window.dispatchEvent(new Event("profileUpdated"));
             }
 
@@ -153,12 +150,12 @@ const RestaurantUpdate = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#fff5e6] to-[#f0f5f9] flex mt-10">
-            {/* Sidebar */}
+            
             <aside className="w-64 fixed top-0 left-0 h-screen z-10 bg-[#1e1e2f] shadow-lg">
                 <RestaurantSidebar />
             </aside>
 
-            {/* Main Content */}
+            
             <main className="flex-grow ml-64 p-10 overflow-auto">
                 <div className="max-w-4xl mx-auto shadow-sm shadow-gray-400 p-10">
                     <div className="flex items-center justify-center gap-3 mb-10">
@@ -172,7 +169,7 @@ const RestaurantUpdate = () => {
                         className="grid grid-cols-1 md:grid-cols-2 gap-6"
                         encType="multipart/form-data"
                     >
-                        {/* All inputs */}
+                        
                         <input
                             type="text"
                             name="restaurantName"
@@ -279,7 +276,7 @@ const RestaurantUpdate = () => {
                             className="border p-2 rounded"
                         />
 
-                        {/* Modern Image Upload */}
+                        
                         <div className="md:col-span-2">
                             <label className="block mb-2 font-medium text-gray-700">Owner Image</label>
                             <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -328,7 +325,7 @@ const RestaurantUpdate = () => {
                             </div>
                         </div>
 
-                        {/* Submit */}
+                        
                         <div className="md:col-span-2 flex justify-center">
                             <button
                                 type="submit"

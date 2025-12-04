@@ -11,7 +11,6 @@ const DeliveryBoySidebar = () => {
     const token = localStorage.getItem('userToken');
 
     useEffect(() => {
-        // Fetch delivery boy profile info for sidebar
         const fetchDeliveryBoy = async () => {
             try {
                 const res = await axios.get(`${BASE_URL}/Delivery-Boy/getdeliveryboy`, {
@@ -54,8 +53,6 @@ const DeliveryBoySidebar = () => {
                     {deliveryBoy?.name || 'Delivery Boy'}
                 </h2>
             </div>
-
-            {/* Navigation Links */}
             <nav className="flex-grow">
                 <ul>
                     {navLinks.map((link) => (
@@ -77,7 +74,6 @@ const DeliveryBoySidebar = () => {
                 </ul>
             </nav>
 
-            {/* Logout */}
             <button
                 onClick={handleLogout}
                 className="flex items-center px-4 py-3 mb-10 rounded-lg text-gray-600 hover:bg-red-100 hover:text-red-600 transition-colors duration-200 cursor-pointer"

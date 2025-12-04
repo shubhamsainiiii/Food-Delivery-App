@@ -45,9 +45,7 @@ const AdminDashboard = () => {
                 ></div>
             )}
 
-            {/* Main Content */}
             <main className="flex-1 p-6 md:ml-64 transition-all duration-300">
-                {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center gap-3 w-full max-w-md">
                         <FaBars
@@ -72,7 +70,6 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
-                {/* Stat Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <StatCard title="Daily Revenue" value="$9854.00" icon="💰" />
                     <StatCard title="Total Orders" value="152" icon="📦" />

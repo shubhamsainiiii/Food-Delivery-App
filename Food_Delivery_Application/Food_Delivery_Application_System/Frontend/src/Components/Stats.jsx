@@ -16,10 +16,8 @@ const Stats = () => {
                 height: '600px',
             }}
         >
-            {/* Dark overlay for contrast */}
             <div className="absolute inset-0 bg-white/10 z-0"></div>
 
-            {/* Glassmorphism Box */}
             <div className="absolute inset-20 flex justify-center items-end pb-12 z-10">
                 <div className="backdrop-blur-sm bg-white/0 border border-white/40 rounded-xl shadow-sm shadow-gray-300 px-10 py-8 text-center w-[100%] max-w-6xl">
                     <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4">

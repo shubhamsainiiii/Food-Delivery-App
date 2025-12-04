@@ -20,14 +20,14 @@ const FAQ = () => {
     return (
         <section className="bg-gradient-to-br from-[#faebd7] to-[#f7fafc] py-12 mt-18">
             <div className="max-w-7xl mx-auto">
-                {/* Centered Heading */}
+
                 <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
                     Frequently Asked Questions
                 </h2>
 
-                {/* FAQ Section Layout */}
+                
                 <div className="flex flex-col md:flex-row items-center gap-10">
-                    {/* Left Image */}
+
                     <div className="flex-1 flex justify-center">
                         <img
                             src={faqImage}
@@ -36,7 +36,6 @@ const FAQ = () => {
                         />
                     </div>
 
-                    {/* Right Accordion */}
                     <div className="flex-1 w-full mr-5">
                         {faqs.map((faq, index) => {
                             const isOpen = openIndex === index;

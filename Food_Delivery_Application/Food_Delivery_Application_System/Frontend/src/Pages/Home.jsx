@@ -22,8 +22,6 @@ const Home = () => {
 
                 const restaurantsData = restaurantRes.data.data || [];
                 const foodData = foodRes.data.foodItem || [];
-
-                // enrich food with restaurantName
                 const enrichedFood = foodData.map(item => {
                     const restaurant = restaurantsData.find(r => r._id === item.restaurantId);
                     return {
@@ -48,7 +46,6 @@ const Home = () => {
             <Discover restaurants={restaurants} searchTerm={searchTerm} />
             <Stats />
             <DishesGrid food={food} searchTerm={searchTerm} />
-            {/* <FoodMenu food={food} searchTerm={searchTerm} /> */}
             <Footer />
         </div>
     );
